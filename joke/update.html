@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<div id="container">
+    <div></div>
+    <div id="center">
+        <div id="circles"> 
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <p id="message">
+            更新プログラムを構成しています 0%<br>
+            PCの電源を切らないでください。処理にしばらく時間がかかります。
+        </p>
+    </div>
+    <p id="foot">
+        PCは数回再起動します。
+    </p>
+</div>
+
+<style>
+html, body {
+    padding: 0;
+    margin: 0;
+    color: white;
+    background-color: #4076f3;
+    cursor: none;
+}
+#container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+#center{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+#circles {
+    height: 30px;
+    width: 30px;
+    position: relative;
+}
+#circles > div {
+    height: 6px;
+    width: 6px;
+    border-radius: 3px;
+    background-color: white;
+    position: absolute;
+    left: 12px;
+    top: 24px;
+    transform-origin: 0 -12px;
+    animation: 2s cubic-bezier(.75,.35,.47,.8) rotate infinite;
+}
+#circles > div:nth-child(0) { animation-delay: 0s; }
+#circles > div:nth-child(1) { animation-delay: 0.2s; }
+#circles > div:nth-child(2) { animation-delay: 0.4s; }
+#circles > div:nth-child(3) { animation-delay: 0.6s; }
+#circles > div:nth-child(4) { animation-delay: 0.8s; }
+#message {
+    text-align: center;
+}
+
+@keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+</style>
+<script>
+
+    var container = document.getElementById("container");
+    container.requestPointerLock = container.requestPointerLock ||
+        container.mozRequestPointerLock ||
+        container.webkitRequestPointerLock;
+    document.body.addEventListener('click', function(e) {
+    if (this.webkitRequestFullScreen) {
+      this.webkitRequestFullScreen();
+    }
+    else if (this. mozRequestFullScreen) {
+      this.mozRequestFullScreen();
+    }
+    else {
+      alert("it is disable to fullscreen with js")
+    }
+    e.preventDefault();
+    container.requestPointerLock();
+  },false);
+
+  document.body.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+  });
+
+  document.body.addEventListener('keydown', function(e) {
+    e.preventDefault();
+  });
+
+</script>
