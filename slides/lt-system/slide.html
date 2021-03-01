@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<title> LT </title>
+<meta charset="utf-8">
+<body>
+<div id="main">
+</div>
+
+<script id="source" type="text/application">
+# LTスライドをMarkdownで作る話
+wass80
+## 自己紹介
++ wass80
++ ななち
++ #vocaloid #boardgame #make-clock
+## LTのネタがない!
+昨日に春合宿行きが決定した。
+## スライドを作る環境もない
+## ネットもない
+## 自分のマシンはほぼ未設定
+自分のマシンを修理に出していた。
+## 詰んだ。
+／(^o^)＼
+## 手元にあるのは
++ Chrome
++ 初期設定のVS code
+## Chromeがある
++ なんでもできる
++ 春合宿は車輪の再実装の機会!
+## Chromeでスライドを作る
++ Markdownを書くとスライドに変換される。
++ Reveal.jsみたいなやつ。
+## つまり
+「LTの準備をするLT」をします
+## コーディングの制約
++ ChromeとVS Codeだけでプログラミング。
++ VS CodeにViキーバインドなしでつらすぎる…
++ 外部ライブラリはなし。
+## 仕様
++ 手抜きMarkdownをスライドにする。
++ h1, h2, p, ul, img だけ。
+## 実装
++ 3時間かかった。
++ パーサも何もかも適当。
+## 実装の様子
+<script>タグの中にMarkdownを書く
+![./source.png]()
+## 実装
++ MarkdownからASTをつくる。
++ ASTを加工しながらDOMに近付けていく。
+## テスト駆動
+JSでObjectの等価性判定めんどい…
+![./tests.png]()
+## 動きもつける
+![./cont.png]()
+## できた。
+## デモ
+## 独自拡張
+自分で処理系を書いたら改造して遊べる
+たとえば「~」で囲むと楽しくして欲しい！
+## こうなる
+~楽しい~テキスト
+## まとめ
+その独自拡張が本当に必要かは真面目に考えよう。
+# りの部屋の時計をつくりたい。
+wass80
+## 自己紹介
++ ななち
+## リノ部屋の時計が壊れた
+これは時計作成チャンス。
+## LED matrixで作りたい
+~ぴかぴかしてるの楽しい~
+## 5000円ぐらいする
++ それなりに高い。
++ 20x20cm、32x32led
+## フルカラー制御がむずい
+256階調カラーで制御するにはFPGAでコントロールする必要があるらしい。
+## なんで
++ 各LEDはONかOFFかしか取れない
++ ダイナミクス制御が必要
+## 面倒い、
+16階調カラーだとマイコンで行けそう。
+## 新歓時期までに間に合うだろうか
+~がんばる~
+</script>
+
+<script>
+
+const equalObj = (a, b) => {
+    for (const p in b) {
+        if (!a[p]) return false;
+    }
+    for (const p in a) {
+        if (typeof a[p] === "object") {
+            if (!equalObj(a[p], b[p])) return false;
+        } else if (a[p] !== b[p]) {
+            return false;
+        }
+    }
+    return true;
+};
+
+const assertEq = (a, b) => {
+    if (equalObj(a, b)) {
+        console.info("Asserted");
+        return;
+    }
+    console.error("Assert Failed", a, b, JSON.stringify(a), JSON.stringify(b));
+}
+
+const aststr = (text) => ({tag: "str", text});
+const astlove = (text) => ({tag: "love", text});
+const astimg = (src, alt) => ({tag: "img", src, alt});
+
+const parseText = (str) => {
+    let s = str;
+    const res = [];
+    while(s !== "") {
+        let m;
+        if (m = s.match(/!\[(.*)\]\((.*)\)/)) {
+            res.push(aststr(str.substr(0, m.index)));
+            res.push(astimg(m[1], m[2]));
+            s = str.substr(m.index + m[0].length);
+        } if (m = s.match(/~(.*)~/)) {
+            res.push(aststr(str.substr(0, m.index)));
+            res.push(astlove(m[1]));
+            s = str.substr(m.index + m[0].length);
+        } else {
+            res.push(aststr(s));
+            s = "";
+        }
+    }
+    return res;
+}
+
+const ast1 = (tag, text) => ({ tag, text });
+
+const parseLine = (line) => {
+    let m;
+    if (m = line.match(/^\s*##\s*(.+)/)) {
+        return ast1("h2", parseText(m[1]));
+    }
+    if (m = line.match(/^\s*#\s*(.+)/)) {
+        return ast1("h1", parseText(m[1]));
+    }
+    if (m = line.match(/^\s*\+\s*(.+)/)) {
+        return ast1("list", parseText(m[1]));
+    }
+    return ast1("p", parseText(line));
+};
+
+const paging = (lines) => {
+    const res = [];
+    let page = [];
+    let list = [];
+    lines.forEach((l) => {
+        if (l.tag !== "list" && list.length !== 0) {
+            page.push(ast1("ul", list));
+            list = [];
+        }
+        switch (l.tag) {
+        case "h1":
+            res.push(page);
+            page = [l];
+            break;    
+        case "h2":
+            res.push(page);
+            page = [l];
+            break;
+        case "list":
+            list.push(l.text);
+            break;
+        case "p":
+            page.push(l);
+            break;
+        default: console.error("Unreachable");
+        }
+    });
+    res.push(page);
+    return res.slice(1);
+};
+
+const parse = (src) => {
+    return paging(src.split("\n").map((l) => parseLine(l)));
+};
+
+const textsdom = (texts) => {
+    return texts.map((text) => {
+        switch (text.tag) {
+        case "str":
+            return text.text;
+        case "img":
+            return `<div class="img" style="background-image:url('${text.src}')"></div>`;
+        case "love":
+            return `<big>${text.text}</big>`;
+        default: console.error("Unreachable");
+        }
+    }).join("");
+};
+
+const linedom = (line) => {
+    let res;
+    switch(line.tag) {
+    case "h1":
+        res = document.createElement("h1");
+        res.innerHTML = textsdom(line.text);
+        return res;
+    case "h2":
+        res = document.createElement("h2");
+        res.innerHTML = textsdom(line.text);
+        return res;
+    case "p":
+        res = document.createElement("p");
+        res.innerHTML = textsdom(line.text);
+        return res;
+    case "ul":
+        res = document.createElement("ul");
+        line.text.forEach((t) => {
+            const li = document.createElement("li");
+            li.innerHTML = textsdom(t);
+            res.appendChild(li);
+        });
+        return res;
+    default: console.log("Unreachable");
+    }
+};
+
+const pagedom = (page) => {
+    const res = document.createElement("div");
+    res.classList.add("page");
+    page.map((l) => linedom(l)).forEach((d) => {
+        res.appendChild(d);
+    });
+    return res;
+};
+
+const slidedom = (pages) => {
+    const res = document.createElement("div");
+    res.classList.add("slide");
+    pages.map((page) => {
+        const paged = pagedom(page);
+        res.appendChild(paged);
+    });
+    return res;
+}
+
+const makeSlide = (src) => slidedom(parse(src));
+
+// TESTs
+assertEq([1], [1]);
+assertEq({a:2, b:1}, {b:1, a:2});
+assertEq([[1]], [[1]]);
+
+assertEq(parseText("hoge"), [aststr("hoge")]);
+assertEq(parseText("hoge ![./src](alt) piyo"),
+         [aststr("hoge "), astimg("./src", "alt"), aststr(" piyo")]);
+
+assertEq(parseLine(" + Test"), ast1("list", [aststr("Test")]));
+assertEq(parseLine("#Test"), ast1("h1", [aststr("Test")]));
+assertEq(parseLine(" ## Test"), ast1("h2", [aststr("Test")]));
+
+assertEq(paging([ast1("h1", "A"), ast1("p", "hoge"),
+                 ast1("h2", "B"), ast1("p", "piyo")]),
+         [[ast1("h1", "A"), ast1("p", "hoge")],
+          [ast1("h2", "B"), ast1("p", "piyo")]]
+        );
+assertEq(paging([ast1("h1", "A"), ast1("list", "hoge"),
+                 ast1("h2", "B"), ast1("list", "piyo1"),
+                 ast1("list", "piyo2"), ast1("p", "piyo")]),
+         [[ast1("h1", "A"), ast1("ul", ["hoge"])],
+          [ast1("h2", "B"), ast1("ul",  ["piyo1", "piyo2"]),
+           ast1("p", "piyo")]]
+        );
+
+//assertEq(textsdom([astimg("src", "alt")]),
+//         `<img src="src" alt="alt">`);
+
+const sourceDom =  document.getElementById("source");
+const source = sourceDom.innerHTML;
+
+console.log(source);
+console.log(parseLine("+ #a"));
+console.log(parse(source));
+
+const main = document.getElementById("main");
+main.appendChild(makeSlide(source));
+
+
+//// Controll
+let now = 0;
+let pages = Array.from(main.querySelectorAll(".page"));
+const prev = () => {
+    if (now <= 0) return;
+    pages[now].classList.add("none");
+    pages[now - 1].classList.remove("none");
+    pages[now - 1].style.display = "block";
+    now -= 1;
+};
+const next = () => {
+    if (now >= pages.length - 1) return;
+    //pages[now].classList.add("none");
+    pages[now + 1].classList.remove("none");
+    now += 1;
+};
+const init = () => {
+    pages.forEach((p, i) => {
+        if (now === i) {
+            p.classList.remove("none");
+        } else {
+            p.classList.add("none");
+        }
+    });
+};
+pages.forEach((p) => {
+    p.addEventListener("transitionend", (e) => {
+        if (p.classList.contains("none")) {
+        }
+    });
+});
+document.body.addEventListener("keydown", (e) => {
+    switch (e.code) {
+    case "ArrowRight":
+        next();
+        break;
+    case "ArrowLeft":
+        prev();
+        break;
+    }
+});
+
+console.log(pages);
+init();
+</script>
+
+<style>
+body {
+    margin: 0;
+    padding: 0;
+}
+#main {
+
+}
+.slide {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+}
+.page {
+    color: #eee;
+    width: 100vw;
+    height: 100vh;
+    box-sizing: border-box;
+    border: 2px white solid;
+    background: #333;
+    padding: 32px;
+    transition: 0.5s top;
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+}
+.page.none {
+    top: -100vh;
+}
+h1 {
+    font-size: 96px;
+}
+h2 {
+    font-size: 64px;
+}
+p {
+    font-size: 48px;
+}
+li {
+    font-size: 48px;
+}
+.img {
+    background-repeat: no-repeat;
+    background-size: contain;
+    height: 320px;
+}
+big {
+    font-size: 300%;
+    animation: 1s color infinite;
+    font-weight: bolder;
+}
+@keyframes color {
+    0% { color: hsl(0, 100%, 63%); }
+    25% { color: hsl(90, 100%, 63%); }
+    50% { color: hsl(180, 100%, 63%); }
+    75% { color: hsl(270, 100%, 63%); }
+    100% { color: hsl(360, 100%, 63%); }
+}
+</style>
+</body>
