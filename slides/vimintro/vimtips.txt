@@ -1,0 +1,14 @@
+ko(pposite) : Visualモードで選択範囲の反対に移動する
+do, dp : vimdiffで変更を受け渡し
+:%s!^// !!g : 行頭の// の削除, 区切り文字は/でなくて良い
+:%s!/\v*(.+)*/$!//\1! : /*hoge*/ を //hogeに, \vを検索に含めるとエスケープが楽になる
+ib,iB : i(, i{ のかわりになる
+J (gJ) : N行したにある行まで改行削除して, 後ろにつなげる (空白なし)
+gv : 前回の選択範囲を再選択
+gs : N秒間スリープ(!?)
+:Unite output;map|map!|lmap : マッピング一覧が見れる [Unite]
+sxx : 画面内のxxに移動 マウスっぽい移動ができる [easy-motion]
+<C-s> : 端末が止まる 回復には <C-q>
+xp : 2文字の入れ替え ddp 行の入れ替え
+:Gstatus : git status (add や commit や diff が コマンドで行える) [fugitive]
+:x : :wq とほとんど同じ

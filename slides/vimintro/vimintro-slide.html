@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="KMC1回生 wass80" />
+  <title>Vim 初心者のための Vim 講座</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="reveal.js/css/reveal.min.css"/>
+    <style type="text/css">code{white-space: pre;}</style>
+    <link rel="stylesheet" href="reveal.js/css/theme/simple.css" id="theme">
+    <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+    <script>
+      if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = 'reveal.js/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+      }
+    </script>
+    <!--[if lt IE 9]>
+    <script src="reveal.js/lib/js/html5shiv.js"></script>
+    <![endif]-->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section>
+    <h1 class="title">Vim 初心者のための Vim 講座</h1>
+    <h2 class="author">KMC1回生 wass80</h2>
+    <h3 class="date">2015/11/6</h3>
+</section>
+
+<section class="slide level1">
+
+<h2 id="自己紹介">自己紹介</h2>
+<ul>
+<li>工学部情報学科 1回生</li>
+<li>Js と Ruby が母言語に近い</li>
+<li>Haskell が好き</li>
+<li>Vim 2年目程度</li>
+</ul>
+<style>
+code {
+  background : #eee;
+  padding : 2px;
+}
+h1 {
+  font-size: 2em !important;
+}
+</style>
+</section>
+<section class="slide level1">
+
+<h2 id="この講座の対象">この講座の対象</h2>
+<ul>
+<li>Vim を使ってみたい人</li>
+<li>Vim をメモ帳レベルにしか使っていない人</li>
+</ul>
+</section>
+<section class="slide level1">
+
+<h2 id="この講座の対象外の人">この講座の対象外の人</h2>
+<ul>
+<li>vimrc の設定したい</li>
+<li>良さのあるプラグインを教えてほしい</li>
+<li>別のエディタをバリバリ使っている</li>
+</ul>
+<p>. . .</p>
+<blockquote>
+<p>宗教戦争をしに来たわけではない</p>
+</blockquote>
+</section>
+<section class="slide level1">
+
+<h2 id="目標">目標</h2>
+<ul>
+<li>移動速度を上げる</li>
+<li>オペレータを活用する</li>
+<li>テキストオブジェクトを使えるようになる</li>
+<li>繰り返しがサクッとできるようになる</li>
+</ul>
+<p>→ あなた, まだキーボードを連打していませんか?</p>
+<p>このスライドの半分以上は移動するコマンドの紹介です</p>
+<p>でも言いたいことは後半</p>
+</section>
+<section class="slide level1">
+
+<h3 id="先に">先に</h3>
+<p>いろいろ言いますが, (僕は)覚えられないです</p>
+<p>お手元に Vim を用意しておくのが一番良さそうです</p>
+</section>
+<section class="slide level1">
+
+<h3 id="vim-のインストール">Vim のインストール</h3>
+<p>お手元に *nix の端末があるなら, たいてい入っている</p>
+<p>Windows では Kaoriya 版 Vim がいろいろ入っていて使いやすい</p>
+<p><a href="http://www.kaoriya.net/software/vim/" class="uri">http://www.kaoriya.net/software/vim/</a></p>
+<p>gvim : gui 版 vim</p>
+</section>
+<section class="slide level1">
+
+<h2 id="vim-の-モード">Vim の モード</h2>
+<p>Vim にはモードが有る</p>
+<ul>
+<li>Normal モード : 起動時のモード</li>
+<li>Insert モード [i] : テキストを入力するモード</li>
+<li>Visual モード [v] : テキストを選択するモード</li>
+<li>Command Line モード [:] : Exコマンドを打つモード</li>
+</ul>
+<p>Normal モードから[]のキーを押すことで, Normal以外のモードに推移</p>
+<p>Esc を押すことで Normal モードに戻る</p>
+</section>
+<section class="slide level1">
+
+<h2 id="基本コマンド">基本コマンド</h2>
+<ul>
+<li><code>i</code> Insert モードに</li>
+<li><code>v</code> Visual モードに
+<ul>
+<li>上のモードで <code>&lt;Esc&gt;</code> Normal モードに</li>
+</ul></li>
+<li><code>u</code> 元に戻す [Undo]</li>
+<li><code>:w&lt;CR&gt;</code> 書き込み [write]</li>
+<li><code>:q&lt;CR&gt;</code> 閉じる [quit]</li>
+</ul>
+<p>. . .</p>
+<ul>
+<li><code>&lt;CR&gt;</code> は Enterキー [Carriage Return]</li>
+<li><code>&lt;C-x&gt;</code> は CTRL キーと x を同時押しの意味</li>
+<li><code>&lt;M-x&gt;</code> META(ALT)キーも存在する</li>
+</ul>
+</section>
+<section class="slide level1">
+
+<h2 id="移動コマンド">移動コマンド</h2>
+<div style="display: flex; justify-content: space-between">
+<div>
+<ul>
+<li><code>h</code> N文字右に</li>
+<li><code>j</code> 論理行でN行下に</li>
+<li><code>k</code> 論理行でN行上に</li>
+<li><code>l</code> N文字左に</li>
+</ul>
+</div>
+<img style="display: block" src="http://dnaimg.com/2012/03/11/here-is-why-vim-uses-the-hjkl-keys-as-arrow-keys/01.jpg">
+</div>
+</section>
+<section class="slide level1">
+
+<h3 id="nって">Nって?</h3>
+<p>Vim の大体のコマンドは前に数字をつけることが出来る</p>
+<ul>
+<li><code>123j</code> 123行下に(いけるところまで)</li>
+</ul>
+<p>指定しない場合大抵 N=1</p>
+<p>基本的にN回繰り返すことと同等</p>
+</section>
+<section class="slide level1">
+
+<h3 id="vimの移動方法は多い">Vimの移動方法は多い</h3>
+<p><img height="400px" src="./vim-motion-cheatsheet.png"></p>
+</section>
+<section class="slide level1">
+
+<h3 id="もっと大きく動く">もっと大きく動く</h3>
+<ul>
+<li><code>$</code> <code>^</code> (<code>0</code>) 行末に 空白を除く行頭に (実の行頭に)</li>
+<li><code>G</code> <code>gg</code> 最後の行に 最初の行(N行目)に</li>
+<li><code>(</code> <code>)</code> 次文に, 前文に</li>
+<li><code>{</code> <code>}</code> 次段落に, 前段落に</li>
+<li><code>&lt;C-d&gt;</code> <code>&lt;C-u&gt;</code> 半画面に下に 上に [Down,Up]</li>
+<li><code>&lt;C-f&gt;</code> <code>&lt;C-b&gt;</code> 一画面に下に 上に [Foward,Back]</li>
+<li><code>H</code> (<code>M</code>) (<code>L</code>) 画面上部に (中央に) (下部に) [High,Middle,Low]</li>
+</ul>
+</section>
+<section class="slide level1">
+
+<h3 id="マウスより早い移動">マウスより早い移動</h3>
+<ul>
+<li><code>w</code> <code>b</code> (<code>W</code> <code>B</code>) 1単語右に 左に (WORD単語で) [Word,Back]</li>
+<li><code>e</code> (<code>ge</code>) 単語の終わりに (前の単語の終わりに) [End]</li>
+<li><code>%</code> 対応するカッコに移動する (次の閉じカッコに移動)</li>
+</ul>
+<p>WORD は空白区切りの文字列<br />単語は hoge-piyo の - とかで区切られる</p>
+<ul>
+<li><code>fx</code> <code>tx</code> (<code>Fx</code> <code>Tx</code>) 次のxに 次のxの手前に (前の) [Find,To]</li>
+</ul>
+<p><code>f</code> と <code>t</code> は <code>;</code> で繰り返せる</p>
+</section>
+<section class="slide level1">
+
+<h3 id="画面外にも移動">画面外にも移動</h3>
+<ul>
+<li><code>/hoge</code> (<code>?hoge</code>) hogeを下に検索する (上に)</li>
+<li><code>n</code> (<code>N</code>) 次の検索文字列へ (前の) [Next]</li>
+<li><code>gd</code> (<code>gD</code>) 関数内でカーソル下の単語の定義元に (ファイル内)</li>
+<li><code>[m</code> (<code>]m</code>) 次のメソッドに (前)</li>
+<li><code>[/</code> (<code>]/</code>) 次のコメントに (前)</li>
+<li><code>g;</code> 前変更箇所に移動, もっと前にも戻れる → :changes</li>
+<li><code>&lt;C-o&gt;</code> (<code>&lt;C-i&gt;</code>) 大きな移動の前に戻る (進む) → :jumps</li>
+</ul>
+</section>
+<section class="slide level1">
+
+<h3 id="入力と同時に">入力と同時に</h3>
+<p>移動後に Insert モードになる</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">移動のみ</th>
+<th style="text-align: left;">Insertモードに</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">なし</td>
+<td style="text-align: left;"><code>i</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>l</code> 一文字右</td>
+<td style="text-align: left;"><code>a</code> [Append]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>^</code> 先頭</td>
+<td style="text-align: left;"><code>I</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>$</code> 終わり</td>
+<td style="text-align: left;"><code>A</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>g;</code> 前変更</td>
+<td style="text-align: left;"><code>gi</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>10i=&lt;Esc&gt;</code> ========== を入力してくれる</p>
+<p><code>o</code> (<code>O</code>) 新しい次の行(前の行)を作り Insertモードに</p>
+</section>
+<section class="slide level1">
+
+<h2 id="オペレータコマンド">オペレータコマンド</h2>
+<p>テキストを操作する</p>
+<ul>
+<li><code>d</code> (<code>dd</code>) 削除 (一行削除) [Delete]</li>
+<li><code>y</code> (<code>Y</code>) ヤンク (一行ヤンク) ヤンクはコピーと同じ意味 [Yank]</li>
+<li><code>c</code> (<code>cc</code>) 変更 (一行変更) [Change]</li>
+<li><code>gu</code> (<code>gU</code>) 小文字化 (大文字化)</li>
+<li><code>&gt;</code> (<code>&lt;</code>) インデント (逆インデント)</li>
+</ul>
+<p>変更は削除してから Insert モードに入る</p>
+<p>削除, ヤンクしたものは <code>p</code> で貼り付けられる [Paste]</p>
+</section>
+<section class="slide level1">
+
+<h2 id="visual-モードでテキストを選択して使うことが出来る">Visual モードでテキストを選択して使うことが出来る</h2>
+<p>範囲選択後にオペレータ</p>
+<ul>
+<li><code>v5wd</code> 5単語選択して削除</li>
+</ul>
+</section>
+<section class="slide level1">
+
+<h3 id="移動と組み合わせる">移動と組み合わせる</h3>
+<p>オペレータは移動を続けることでも働く</p>
+<ul>
+<li><code>dw</code> 単語末まで削除 [Delete Word]</li>
+<li><code>c{</code> 段落末まで置換</li>
+</ul>
+<p><code>v5wd</code> より <code>d5w</code> が楽</p>
+<p>これが大量の移動コマンドがある理由!</p>
+<blockquote>
+<p>“delete 5 words” と感じ取れれば良い</p>
+</blockquote>
+<p><code>5dw</code> と <code>d5w</code> は同じ</p>
+<blockquote>
+<p>“5times delete a word” と “delete 5 words” の違い程度</p>
+</blockquote>
+</section>
+<section class="slide level1">
+
+<h3 id="行指向">行指向</h3>
+<p>上下に動くものは行全てに適用される</p>
+<ul>
+<li><code>dj</code> 下2行を削除</li>
+<li><code>dvj</code> 行指向でなくす</li>
+<li><code>d&lt;C-v&gt;j</code> ブロック指向</li>
+</ul>
+<p>Visualモードに入るコマンドと対応している</p>
+</section>
+<section class="slide level1">
+
+<h3 id="変更は繰り返せる">変更は繰り返せる</h3>
+<p>直前の変更を <code>.</code> で繰り返すことが出来る</p>
+<ul>
+<li><code>dw....</code> 5単語削除</li>
+<li><code>ihoge&lt;CR&gt;&lt;Esc&gt;..</code> hoge を 3回挿入</li>
+</ul>
+</section>
+<section class="slide level1">
+
+<h2 id="テキストオブジェクト">テキストオブジェクト</h2>
+<p>移動の代わりに使える, 範囲を表すモノ</p>
+<p>(hoge) にたいして</p>
+<ul>
+<li><code>a(</code> は (hoge) [Around]</li>
+<li><code>i(</code> は hoge [Inner]</li>
+</ul>
+<p>例えば <code>ci[</code> は [] 内を変更 [Change Inner []]</p>
+</section>
+<section class="slide level1">
+
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">オブジェクト</th>
+<th style="text-align: left;">意味</th>
+<th style="text-align: left;">例</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>w</code> (<code>W</code>)</td>
+<td style="text-align: left;">単語 (WORD)</td>
+<td style="text-align: left;">hoge (HO=GE)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>s</code> (<code>p</code> )</td>
+<td style="text-align: left;">文 (段落)</td>
+<td style="text-align: left;">hoge.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>[</code> <code>(</code> <code>{</code> <code>&lt;</code></td>
+<td style="text-align: left;">カッコ</td>
+<td style="text-align: left;">(hoge)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>t</code></td>
+<td style="text-align: left;">htmlタグ</td>
+<td style="text-align: left;">&lt;p&gt;hoge&lt;p&gt;</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>&quot;</code> <code>'</code> <code>\`</code></td>
+<td style="text-align: left;">クオート類</td>
+<td style="text-align: left;">“hoge”</td>
+</tr>
+</tbody>
+</table>
+<p><code>das</code> 一文削除 [Delete A Sentence]</p>
+<p><code>a</code>は周りの空白ごと削除する</p>
+</section>
+<section class="slide level1">
+
+<h3 id="textobjプラグイン">textobjプラグイン</h3>
+<ul>
+<li>(hoge + piyo, piyo) → (piyo, hoge + piyo)
+<ul>
+<li>textobj-argument と operator-exchange</li>
+</ul></li>
+<li>apple orange suica → apple apple apple
+<ul>
+<li>operator-replace</li>
+</ul></li>
+<li>/* comment */ → comment
+<ul>
+<li>textobj-comment と operator-comment</li>
+</ul></li>
+<li>“word” → ‘word’
+<ul>
+<li>vim-surround</li>
+</ul></li>
+<li>textobj-entire, line, indent, function も便利</li>
+</ul>
+<p>一覧 : <a href="http://d.hatena.ne.jp/osyo-manga/20130717/1374069987" class="uri">http://d.hatena.ne.jp/osyo-manga/20130717/1374069987</a></p>
+</section>
+<section class="slide level1">
+
+<h2 id="覚えられないよ">覚えられないよ!</h2>
+<p>便利なコマンドは使うようになるので,<br />何度か実践してみよう</p>
+<p>vimtutor は良く出来ているし :help を読もう</p>
+<p>矢印キーを使わないで, 移動を活用してみる</p>
+</section>
+<section class="slide level1">
+
+<h2 id="まとめ">まとめ</h2>
+<ul>
+<li>Normalモードにある大量の移動コマンドを覚えよう</li>
+<li>オペレータと組み合わせると最強になれる</li>
+<li>テキストオブジェクトは便利</li>
+</ul>
+<h2 id="その次へ">その次へ</h2>
+<p>まだまだ便利なコマンドはたくさんある</p>
+<ul>
+<li>Exモードのコマンド類(:subsutitute , :! , :global , :help)</li>
+<li>バッファ, ウインドウ, タブの関係</li>
+<li>レジスタ, マーク, 折りたたみ, マクロ</li>
+<li>Vimgrep, quickfix</li>
+<li>Insertモードでのコマンド</li>
+<li>基本的な vimrc 設定</li>
+</ul>
+</section>
+<section class="slide level1">
+
+<p>便利なプラグインもたくさんある</p>
+<ul>
+<li>NeoBundle プラグイン管理</li>
+<li>Unite 一覧, 検索</li>
+<li>NeoComplete 補完</li>
+<li>Quickrun</li>
+<li>textobj類</li>
+<li>airline ステータスラインをリッチに</li>
+<li>fugitive git</li>
+<li>Emmet html編集</li>
+<li>etc…</li>
+</ul>
+</section>
+<section id="答えられる限りの質問に答える" class="slide level1">
+<h1>答えられる限りの質問に答える</h1>
+<p>neovim 1.0出ました</p>
+</section>
+    </div>
+  </div>
+
+
+  <script src="reveal.js/lib/js/head.min.js"></script>
+  <script src="reveal.js/js/reveal.min.js"></script>
+
+  <script>
+
+      // Full list of configuration options available here:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+        theme: 'moon', // available themes are in /css/theme
+        transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+          { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+          { src: 'reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
+//          { src: 'reveal.js/plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; }, }
+//          { src: 'reveal.js/plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+]});
+    </script>
+    </body>
+</html>
