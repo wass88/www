@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="wass80" />
+  <meta name="dcterms.date" content="2017-03-10" />
+  <title>第3部 R言語のメタプログラミング</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="./reveal.js-3.3.0/css/reveal.css"/>
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; background-color: #303030; color: #cccccc; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; }
+td.sourceCode { padding-left: 5px; }
+pre, code { color: #cccccc; background-color: #303030; }
+code > span.kw { color: #f0dfaf; } /* Keyword */
+code > span.dt { color: #dfdfbf; } /* DataType */
+code > span.dv { color: #dcdccc; } /* DecVal */
+code > span.bn { color: #dca3a3; } /* BaseN */
+code > span.fl { color: #c0bed1; } /* Float */
+code > span.ch { color: #dca3a3; } /* Char */
+code > span.st { color: #cc9393; } /* String */
+code > span.co { color: #7f9f7f; } /* Comment */
+code > span.ot { color: #efef8f; } /* Other */
+code > span.al { color: #ffcfaf; } /* Alert */
+code > span.fu { color: #efef8f; } /* Function */
+code > span.er { color: #c3bf9f; } /* Error */
+code > span.wa { color: #7f9f7f; font-weight: bold; } /* Warning */
+code > span.cn { color: #dca3a3; font-weight: bold; } /* Constant */
+code > span.sc { color: #dca3a3; } /* SpecialChar */
+code > span.vs { color: #cc9393; } /* VerbatimString */
+code > span.ss { color: #cc9393; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { } /* Variable */
+code > span.cf { color: #f0dfaf; } /* ControlFlow */
+code > span.op { color: #f0efd0; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #ffcfaf; font-weight: bold; } /* Preprocessor */
+code > span.at { } /* Attribute */
+code > span.do { color: #7f9f7f; } /* Documentation */
+code > span.an { color: #7f9f7f; font-weight: bold; } /* Annotation */
+code > span.cv { color: #7f9f7f; font-weight: bold; } /* CommentVar */
+code > span.in { color: #7f9f7f; font-weight: bold; } /* Information */
+</style>
+
+<link rel="stylesheet" href="./reveal.js-3.3.0/css/theme/night.css" id="theme">
+
+<style type="text/css">
+.reveal section img {
+  background: rgba(255, 255, 255, 0.85);
+}
+</style>
+
+  <!-- some tweaks to reveal css -->
+  <style type="text/css">
+    .reveal h1 { font-size: 2.0em; }
+    .reveal h2 { font-size: 1.5em;  }
+    .reveal h3 { font-size: 1.25em;	}
+    .reveal h4 { font-size: 1em;	}
+
+    .reveal .slides>section,
+    .reveal .slides>section>section {
+      padding: 0px 0px;
+    }
+
+
+
+    .reveal table {
+      border-width: 1px;
+      border-spacing: 2px;
+      border-style: dotted;
+      border-color: gray;
+      border-collapse: collapse;
+      font-size: 0.7em;
+    }
+
+    .reveal table th {
+      border-width: 1px;
+      padding-left: 10px;
+      padding-right: 25px;
+      font-weight: bold;
+      border-style: dotted;
+      border-color: gray;
+    }
+
+    .reveal table td {
+      border-width: 1px;
+      padding-left: 10px;
+      padding-right: 25px;
+      border-style: dotted;
+      border-color: gray;
+    }
+
+  </style>
+
+    <style type="text/css">code{white-space: pre;}</style>
+
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match( /print-pdf/gi ) ? './reveal.js-3.3.0/css/print/pdf.css' : './reveal.js-3.3.0/css/print/paper.css';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+    <!--[if lt IE 9]>
+    <script src="./reveal.js-3.3.0/lib/js/html5shiv.js"></script>
+    <![endif]-->
+
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section>
+    <h1 class="title">第3部 R言語のメタプログラミング</h1>
+    <h2 class="author">wass80</h2>
+    <h3 class="date">2017-03-10</h3>
+</section>
+
+<section id="メタプログラミングとは" class="slide level2">
+<h1>メタプログラミングとは</h1>
+<p>プログラムでプログラムを扱うこと</p>
+<p>例:</p>
+<ul>
+<li>Cのプリプロセッサ</li>
+<li>C++のtemplate</li>
+<li>LispのS式</li>
+<li>Rubyの動的なメソッド, クラス</li>
+</ul>
+<style>
+.reveal code {
+font-size: 150%;
+}
+</style>
+</section>
+<section id="dsl-ドメイン固有言語" class="slide level2">
+<h1>DSL (ドメイン固有言語)</h1>
+<ul>
+<li>メタプログラミングの目的として, DSLがある</li>
+<li>特定目的のための固有の言語</li>
+<li>Rubyでよくあるやつ</li>
+<li>出来ることを減らしその分簡単に書きたいという思い</li>
+</ul>
+</section>
+<section id="rのメタプログラミング" class="slide level2">
+<h1>Rのメタプログラミング</h1>
+<ul>
+<li>HaddlyのライブラリはDSLの一例
+<ul>
+<li>dplyrもggplotも独特な書き方を提供している</li>
+<li>特に<code>%&gt;%</code>はメタプログラミングの力を借りていることがわかりやすい</li>
+</ul></li>
+</ul>
+</section>
+<section id="参考本" class="slide level2">
+<h1>参考本</h1>
+<ul>
+<li>R言語徹底解説</li>
+<li>Hadley神の本</li>
+</ul>
+</section>
+<section id="メタプログラミングの仕組み" class="slide level2">
+<h1>メタプログラミングの仕組み</h1>
+<ul>
+<li>Rの関数の挙動が関わってくる</li>
+<li>変数名の解決</li>
+<li>関数の構成要素
+<ul>
+<li>引数リスト (formals)</li>
+<li>関数本体 (body)</li>
+<li>関数定義元の環境 (environment)</li>
+</ul></li>
+</ul>
+</section>
+<section id="変数名の解決" class="slide level2">
+<h1>変数名の解決</h1>
+<p>変数を評価するとコピーが得られる</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span><span class="dv">1</span>:<span class="dv">3</span>
+y &lt;-<span class="st"> </span>x <span class="co"># Copy x </span>
+x[<span class="dv">2</span>] &lt;-<span class="st"> </span><span class="dv">9</span>
+x</code></pre></div>
+<pre><code>## [1] 1 9 3</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">y</code></pre></div>
+<pre><code>## [1] 1 2 3</code></pre>
+</section>
+<section id="関数でも" class="slide level2">
+<h1>関数でも</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">touch &lt;-<span class="st"> </span>function(x) x[<span class="dv">1</span>] &lt;-<span class="st"> </span><span class="dv">8</span> <span class="co"># Copied x</span>
+a &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">11</span>)
+<span class="kw">touch</span>(a)
+a</code></pre></div>
+<pre><code>## [1] 10 11</code></pre>
+</section>
+<section id="毎回コピーするとめっちゃ遅いんでは" class="slide level2">
+<h1>毎回コピーするとめっちゃ遅いんでは</h1>
+<ul>
+<li>遅い</li>
+<li>R 2.xでは実際にコピーしていた</li>
+<li>R 3.xではCopy on Modifyを採用している
+<ul>
+<li>すぐにコピーはせず, 変更するまでコピーしない</li>
+<li>このため少しマシ</li>
+</ul></li>
+</ul>
+</section>
+<section id="環境" class="slide level2">
+<h1>環境</h1>
+<ul>
+<li>関数の外側の環境の変数を見つけるための仕組み</li>
+<li>Listのようなもの</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">i &lt;-<span class="st"> &quot;before&quot;</span>
+return_i &lt;-<span class="st"> </span>function() i
+<span class="kw">return_i</span>()</code></pre></div>
+<pre><code>## [1] &quot;before&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">i &lt;-<span class="st"> &quot;after&quot;</span>
+<span class="kw">return_i</span>()</code></pre></div>
+<pre><code>## [1] &quot;after&quot;</code></pre>
+</section>
+<section id="関数の環境" class="slide level2">
+<h1>関数の環境</h1>
+<ul>
+<li>関数は自分の環境と親の環境を持っている</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">global &lt;-<span class="st"> </span><span class="dv">1</span>
+print_env&lt;-<span class="st"> </span>function(){
+  outer  &lt;-<span class="st"> </span><span class="dv">2</span>
+  <span class="kw">list</span>(<span class="dt">here =</span> <span class="kw">ls</span>(), <span class="co"># 自分の環境の名前</span>
+      <span class="dt">parent =</span> <span class="kw">ls</span>(<span class="dt">envir =</span> <span class="kw">parent.frame</span>())) <span class="co"># 親環境の名前</span>
+}
+<span class="kw">print_list</span>(<span class="kw">print_env</span>())</code></pre></div>
+<pre><code>## $here: outer; $parent: c(&quot;global&quot;, &quot;print_env&quot;, &quot;print_list&quot;)</code></pre>
+</section>
+<section id="クロージャ" class="slide level2">
+<h1>クロージャ</h1>
+<ul>
+<li>外側の関数の環境も見つける</li>
+<li>自分の環境にない場合, 親の環境で探す</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">i =<span class="st"> &quot;global&quot;</span>
+const &lt;-<span class="st"> </span>function(){
+  i &lt;-<span class="st"> &quot;outer&quot;</span> <span class="co"># Found</span>
+  function() i
+}
+f &lt;-<span class="st"> </span><span class="kw">const</span>()
+<span class="kw">f</span>()</code></pre></div>
+<pre><code>## [1] &quot;outer&quot;</code></pre>
+</section>
+<section id="外側の環境の変更" class="slide level2">
+<h1>外側の環境の変更</h1>
+<ul>
+<li><code>&lt;&lt;-</code>大域束縛で外側の変数を書き換える</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">counter &lt;-<span class="st"> </span>function(<span class="dt">i =</span> <span class="dv">1</span>){
+  function() {i &lt;&lt;-<span class="st"> </span>i +<span class="st"> </span><span class="dv">1</span>; i} <span class="co"># Change Outer i</span>
+}
+f &lt;-<span class="st"> </span><span class="kw">counter</span>()
+<span class="kw">c</span>(<span class="kw">f</span>(), <span class="kw">f</span>(), <span class="kw">f</span>())</code></pre></div>
+<pre><code>## [1] 2 3 4</code></pre>
+</section>
+<section id="の場合" class="slide level2">
+<h1><code>&lt;-</code>の場合</h1>
+<ul>
+<li>ローカルな変数を作ってしまう</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">counter &lt;-<span class="st"> </span>function(<span class="dt">i =</span> <span class="dv">1</span>){
+  function() {i &lt;-<span class="st"> </span>i +<span class="st"> </span><span class="dv">1</span>; i} <span class="co"># Make Local i</span>
+}
+f &lt;-<span class="st"> </span><span class="kw">counter</span>()
+<span class="kw">c</span>(<span class="kw">f</span>(), <span class="kw">f</span>(), <span class="kw">f</span>())</code></pre></div>
+<pre><code>## [1] 2 2 2</code></pre>
+</section>
+<section id="まとめ-関数の中の変数" class="slide level2">
+<h1>まとめ: 関数の中の変数</h1>
+<ul>
+<li>関数は自分の環境と親の環境を持つ</li>
+<li><p>自分の環境で名前を探し, なければ親の環境で探す</p></li>
+<li>むやみに参照透過性を崩すのはやめよう</li>
+<li><p><code>&lt;&lt;-</code> 大域束縛演算子は挙動を理解して使うべき</p></li>
+</ul>
+</section>
+<section id="関数の構成" class="slide level2">
+<h1>関数の構成</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">f &lt;-<span class="st"> </span>function(x, <span class="dt">y =</span> <span class="dv">2</span>) <span class="kw">sqrt</span>(x +<span class="st"> </span>y)
+<span class="kw">formals</span>(f) <span class="co"># 引数リスト</span></code></pre></div>
+<pre><code>## $x
+## 
+## 
+## $y
+## [1] 2</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">body</span>(f) <span class="co"># 関数本体</span></code></pre></div>
+<pre><code>## sqrt(x + y)</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">environment</span>(f) <span class="co"># 定義元環境</span></code></pre></div>
+<pre><code>## &lt;environment: R_GlobalEnv&gt;</code></pre>
+</section>
+<section id="関数の定義を見る" class="slide level2">
+<h1>関数の定義を見る</h1>
+<ul>
+<li>名前だけ書くと関数定義を見れる</li>
+<li><code>.Primitive()</code>はRで以外で定義された関数</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">f</code></pre></div>
+<pre><code>## function(x, y = 2) sqrt(x + y)</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sum</code></pre></div>
+<pre><code>## function (..., na.rm = FALSE)  .Primitive(&quot;sum&quot;)</code></pre>
+</section>
+<section id="全ては関数" class="slide level2">
+<h1>全ては関数</h1>
+<p>演算子はバッククオートで関数に</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="dv">1</span> +<span class="st"> </span><span class="dv">3</span></code></pre></div>
+<pre><code>## [1] 4</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="st">`</span><span class="dt">+</span><span class="st">`</span>(<span class="dv">1</span>, <span class="dv">3</span>)</code></pre></div>
+<pre><code>## [1] 4</code></pre>
+</section>
+<section id="ifも関数" class="slide level2">
+<h1><code>if</code>も関数</h1>
+<p>制御構造も関数に</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">if(<span class="dv">1</span> ==<span class="st"> </span><span class="dv">2</span>) <span class="st">&quot;T&quot;</span> else <span class="st">&quot;F&quot;</span></code></pre></div>
+<pre><code>## [1] &quot;F&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="st">`</span><span class="dt">if</span><span class="st">`</span>(<span class="dv">1</span> ==<span class="st"> </span><span class="dv">2</span>, <span class="st">&quot;T&quot;</span>, <span class="st">&quot;F&quot;</span>)</code></pre></div>
+<pre><code>## [1] &quot;F&quot;</code></pre>
+</section>
+<section id="構造も関数に" class="slide level2">
+<h1>構造も関数に</h1>
+<div style="column-count: 2">
+<p>中括弧も関数 (逐次評価, 最後の引数を返す)</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">{a &lt;-<span class="st"> </span><span class="dv">1</span>; a +<span class="st"> </span>a}</code></pre></div>
+<pre><code>## [1] 2</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="st">`</span><span class="dt">{</span><span class="st">`</span>(a &lt;-<span class="st"> </span><span class="dv">2</span>, a +<span class="st"> </span>a)</code></pre></div>
+<pre><code>## [1] 4</code></pre>
+<p>括弧も関数 (恒等関数)</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(<span class="dv">1</span> +<span class="st"> </span><span class="dv">2</span>)</code></pre></div>
+<pre><code>## [1] 3</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="st">`</span><span class="dt">(</span><span class="st">`</span>(<span class="dv">1</span> +<span class="st"> </span><span class="dv">2</span>)</code></pre></div>
+<pre><code>## [1] 3</code></pre>
+</div>
+</section>
+<section id="ifが関数で大丈夫なの" class="slide level2">
+<h1><code>if</code>が関数で大丈夫なの?</h1>
+<p>実はRは引数を<strong>遅延評価</strong>する</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">do_nothing &lt;-<span class="st"> </span>function(x) <span class="kw">message</span>(<span class="st">&quot;ok ?&quot;</span>) <span class="co"># xを評価していない</span>
+<span class="kw">do_nothing</span>(<span class="kw">message</span>(<span class="st">&quot;args&quot;</span>)) <span class="co"># 引数は評価されない</span></code></pre></div>
+<pre><code>## ok ?</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">eval_x &lt;-<span class="st"> </span>function(x) {x; <span class="kw">message</span>(<span class="st">&quot;ok ?&quot;</span>)}
+<span class="kw">eval_x</span>(<span class="kw">message</span>(<span class="st">&quot;args&quot;</span>))</code></pre></div>
+<pre><code>## args</code></pre>
+<pre><code>## ok ?</code></pre>
+<p>このため, <code>if</code>が関数でも問題ない</p>
+</section>
+<section id="遅延評価でないときのif" class="slide level2">
+<h1>遅延評価でないときの<code>if</code></h1>
+<p>もし, ifが引数をすべて評価する場合, どちらの<code>messasge</code>も起きてしまう</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">if (<span class="dv">1</span> ==<span class="st"> </span><span class="dv">2</span>) <span class="kw">message</span>(<span class="st">&quot;T&quot;</span>) else <span class="kw">message</span>(<span class="st">&quot;F&quot;</span>)</code></pre></div>
+<pre><code>## F</code></pre>
+<p>しかし, Rでは引数は必要になるまで評価されない</p>
+<p>条件に応じてどちらかが評価される</p>
+</section>
+<section id="ほんとに関数" class="slide level2">
+<h1>ほんとに関数?</h1>
+<ul>
+<li>極端な例として<code>(</code>を上書きする</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="st">`</span><span class="dt">(</span><span class="st">`</span> &lt;-<span class="st"> </span>function(x) x +<span class="st"> </span><span class="dv">1</span>
+<span class="kw">c</span>(<span class="dv">3</span>, (<span class="dv">3</span>), (<span class="dv">1</span> +<span class="st"> </span><span class="dv">2</span>) *<span class="st"> </span><span class="dv">3</span>) </code></pre></div>
+<pre><code>## [1]  3  4 12</code></pre>
+<ul>
+<li>ヤバイので消す</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">rm</span>(<span class="st">&quot;(&quot;</span>)</code></pre></div>
+</section>
+<section id="まとめ-関数の正体" class="slide level2">
+<h1>まとめ: 関数の正体</h1>
+<ul>
+<li>演算子や制御構造など, すべてが関数で処理されている</li>
+</ul>
+</section>
+<section id="rの引数渡し" class="slide level2">
+<h1>Rの引数渡し</h1>
+<ul>
+<li><p>Rは関数を呼ぶとき, 引数をどのように渡しているだろう</p></li>
+<li>参照の値渡し
+<ul>
+<li>Ruby, Python, Java, JSなど多くの言語</li>
+</ul></li>
+<li>参照渡し, 値のコピー渡しなどを選べる
+<ul>
+<li>C++, C#, Rustなど参照の概念のある言語</li>
+</ul></li>
+<li><p>Rはどちらでもない</p></li>
+</ul>
+</section>
+<section id="表現式と環境渡し" class="slide level2">
+<h1>表現式と環境渡し</h1>
+<ul>
+<li><code>substitute</code>で引数の表現式が見れる</li>
+<li>引数ではこれとプロミスは表現式と元環境</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">s &lt;-<span class="st"> </span>function(x) <span class="kw">substitute</span>(x)
+<span class="kw">s</span>(<span class="dv">1</span> +<span class="st"> </span>noname)</code></pre></div>
+<pre><code>## 1 + noname</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">s</span>(<span class="kw">sqrt</span>(<span class="dv">5</span> *<span class="st"> </span>(<span class="dv">1</span> +<span class="st"> </span><span class="dv">3</span>)))</code></pre></div>
+<pre><code>## sqrt(5 * (1 + 3))</code></pre>
+</section>
+<section id="表現式を文字列に変換" class="slide level2">
+<h1>表現式を文字列に変換</h1>
+<ul>
+<li><code>library(dplyr)</code>などはこれを利用している</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">s &lt;-<span class="st"> </span>function(x) <span class="kw">deparse</span>(<span class="kw">substitute</span>(x))
+<span class="kw">s</span>(<span class="dv">1</span> +<span class="st"> </span><span class="dv">5</span>)</code></pre></div>
+<pre><code>## [1] &quot;1 + 5&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">s</span>(<span class="kw">library</span>(dplyr))</code></pre></div>
+<pre><code>## [1] &quot;library(dplyr)&quot;</code></pre>
+</section>
+<section id="quoteとeval" class="slide level2">
+<h1><code>quote</code>と<code>eval</code></h1>
+<ul>
+<li><code>quote</code> 表現式を返す</li>
+<li><code>eval</code> 表現式を評価</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span><span class="dv">1</span>
+<span class="kw">quote</span>(<span class="dv">1</span> +<span class="st"> </span><span class="dv">2</span>)</code></pre></div>
+<pre><code>## 1 + 2</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">quote</span>(x +<span class="st"> </span><span class="dv">1</span>)</code></pre></div>
+<pre><code>## x + 1</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">eval</span>(<span class="kw">quote</span>(x +<span class="st"> </span><span class="dv">1</span>))</code></pre></div>
+<pre><code>## [1] 2</code></pre>
+</section>
+<section id="quoteとsubstituteの違い" class="slide level2">
+<h1><code>quote</code>と<code>substitute</code>の違い</h1>
+<ul>
+<li><code>substitute</code>はローカルな変数を置き換える</li>
+<li><code>quote</code>はそのまま</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">f &lt;-<span class="st"> </span>function(<span class="dt">x =</span> <span class="dv">1</span>) {
+  y &lt;-<span class="st"> </span><span class="dv">2</span>
+  <span class="kw">c</span>(<span class="kw">quote</span>(x +<span class="st"> </span>y +<span class="st"> </span>z),
+    <span class="kw">substitute</span>(x +<span class="st"> </span>y +<span class="st"> </span>z))
+}
+<span class="kw">f</span>()</code></pre></div>
+<pre><code>## [[1]]
+## x + y + z
+## 
+## [[2]]
+## 1 + 2 + z</code></pre>
+</section>
+<section id="環境指定したeval" class="slide level2">
+<h1>環境指定した<code>eval</code></h1>
+<ul>
+<li>空の環境は<code>new.env()</code>で作れる</li>
+<li>環境はリストと似た操作ができる</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">e &lt;-<span class="st"> </span><span class="kw">new.env</span>()
+e$x &lt;-<span class="st"> </span><span class="dv">5</span>
+x &lt;-<span class="st"> </span><span class="dv">10</span> <span class="co"># Globalの環境</span>
+<span class="kw">eval</span>(<span class="kw">quote</span>(x), e)</code></pre></div>
+<pre><code>## [1] 5</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">eval</span>(<span class="kw">quote</span>(x), <span class="kw">globalenv</span>())</code></pre></div>
+<pre><code>## [1] 10</code></pre>
+</section>
+<section id="実はリストもevalの環境にできる" class="slide level2">
+<h1>実はリストも<code>eval</code>の環境にできる</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">eval</span>(<span class="kw">quote</span>(x), <span class="kw">list</span>(<span class="dt">x=</span><span class="dv">5</span>))</code></pre></div>
+<pre><code>## [1] 5</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">acc &lt;-<span class="st"> </span>function(x, key) <span class="kw">eval</span>(<span class="kw">substitute</span>(key), x)
+<span class="kw">acc</span>(<span class="kw">list</span>(<span class="dt">z=</span><span class="dv">1</span>), z)</code></pre></div>
+<pre><code>## [1] 1</code></pre>
+<p><code>filter</code>はこの機能を利用している</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">filter</span>(iris, Sepal.Length &gt;<span class="st"> </span><span class="fl">7.7</span>)</code></pre></div>
+<pre><code>##   Sepal.Length Sepal.Width Petal.Length Petal.Width   Species
+## 1          7.9         3.8          6.4           2 virginica</code></pre>
+</section>
+<section id="構文木として扱う" class="slide level2">
+<h1>構文木として扱う</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(pryr)
+<span class="kw">ast</span>(<span class="kw">sqrt</span>(x +<span class="st"> </span>y))</code></pre></div>
+<pre><code>## \- ()
+##   \- `sqrt
+##   \- ()
+##     \- `+
+##     \- `x
+##     \- `y</code></pre>
+</section>
+<section id="構文木の構成" class="slide level2">
+<h1>構文木の構成</h1>
+<ul>
+<li>定数: スカラー(<code>&quot;a&quot;</code>, <code>1</code>)</li>
+<li>名前: <code>x</code>, <code>sqrt</code></li>
+<li>呼び出し: <code>()</code></li>
+<li>ペアリスト: <code>(a = 1, b = 3)</code></li>
+</ul>
+</section>
+<section id="構文木の例" class="slide level2">
+<h1>構文木の例</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ast</span>(function(x, <span class="dt">y =</span> <span class="dv">1</span>){z &lt;-<span class="st"> </span>x +<span class="st"> </span>y; z})</code></pre></div>
+<pre><code>## \- ()
+##   \- `function
+##   \- []
+##     \ x =`MISSING
+##     \ y = 1
+##   \- ()
+##     \- `{
+##     \- ()
+##       \- `&lt;-
+##       \- `z
+##       \- ()
+##         \- `+
+##         \- `x
+##         \- `y
+##     \- `z
+##   \- &lt;srcref&gt;</code></pre>
+</section>
+<section id="呼び出し表現式の変更" class="slide level2">
+<h1>呼び出し表現式の変更</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">a &lt;-<span class="st"> </span><span class="kw">quote</span>(x +<span class="st"> </span>y)
+a[[<span class="dv">1</span>]] &lt;-<span class="st"> `</span><span class="dt">*</span><span class="st">`</span> <span class="co"># 関数名</span>
+a[[<span class="dv">2</span>]] &lt;-<span class="st"> </span><span class="dv">5</span> <span class="co"># 第1引数</span>
+a[[<span class="dv">3</span>]] &lt;-<span class="st"> </span><span class="kw">quote</span>(<span class="dv">2</span> +<span class="st"> </span><span class="dv">3</span>) <span class="co"># 第2引数</span>
+a</code></pre></div>
+<pre><code>## .Primitive(&quot;*&quot;)(5, 2 + 3)</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">eval</span>(a)</code></pre></div>
+<pre><code>## [1] 25</code></pre>
+</section>
+<section id="呼び出し表現式の作成" class="slide level2">
+<h1>呼び出し表現式の作成</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">call</span>(<span class="st">&quot;filter&quot;</span>, <span class="kw">quote</span>(hoge), <span class="kw">quote</span>(key &lt;=<span class="st"> </span><span class="dv">5</span>))</code></pre></div>
+<pre><code>## filter(hoge, key &lt;= 5)</code></pre>
+<ul>
+<li>これで任意の表現式を作ることも,</li>
+<li>探索することも出来ることがわかった</li>
+</ul>
+</section>
+<section id="大まとめ-メタプログラミング" class="slide level2">
+<h1>大まとめ: メタプログラミング</h1>
+<ul>
+<li>Rは遅延評価</li>
+<li>関数には構文木と環境が渡る</li>
+<li>構文木をいじることが出来る</li>
+<li>なんでも出来る</li>
+</ul>
+</section>
+<section id="おまけ" class="slide level2">
+<h1>おまけ</h1>
+<p>こういう関数を準備</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lisping &lt;-<span class="st"> </span>function(l) {
+  if(l[[<span class="dv">1</span>]] !=<span class="st"> </span><span class="kw">as.name</span>(<span class="st">&quot;{&quot;</span>)) <span class="kw">return</span>(l)
+  args &lt;-<span class="st"> </span><span class="kw">lapply</span>(<span class="kw">as.list</span>(l)[<span class="kw">c</span>(-<span class="dv">1</span>,-<span class="dv">2</span>)], lisping)
+  f &lt;-<span class="st"> </span><span class="kw">as.character</span>(l[[<span class="dv">2</span>]])
+  <span class="kw">do.call</span>(call, <span class="kw">c</span>(f, args))
+}
+Lispy &lt;-<span class="st"> </span>function(l) <span class="kw">eval</span>(<span class="kw">lisping</span>(<span class="kw">subs</span>(l)), <span class="dt">envir =</span> <span class="kw">parent.frame</span>())</code></pre></div>
+</section>
+<section id="omake" class="slide level2">
+<h1>おまけ</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">Lispy</span>(
+  {<span class="st">&quot;+&quot;</span>
+    {mean
+      {c
+        <span class="dv">1</span>
+        <span class="dv">10</span>
+        {<span class="st">&quot;:&quot;</span>
+          <span class="dv">2</span>
+          <span class="dv">9</span>}}}
+    <span class="dv">100</span>}
+)</code></pre></div>
+<pre><code>## [1] 105.5</code></pre>
+<p>これってS式では??</p>
+</section>
+<section id="結論" class="slide level2">
+<h1>結論</h1>
+<p><span style="font-size:300%;">RはLisp方言だった</span></p>
+</section>
+    </div>
+  </div>
+
+  <script src="./reveal.js-3.3.0/lib/js/head.min.js"></script>
+  <script src="./reveal.js-3.3.0/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Vertical centering of slides
+        center: false,
+        // Transition style
+        transition: 'default', // none/fade/slide/convex/concave/zoom
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'default', // none/fade/slide/convex/concave/zoom
+
+
+        // Optional reveal.js plugins
+        dependencies: [
+        ]
+      });
+    </script>
+  <!-- dynamically load mathjax for compatibility with self-contained -->
+  <script>
+    (function () {
+      var script = document.createElement("script");
+      script.type = "text/javascript";
+      script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+      document.getElementsByTagName("head")[0].appendChild(script);
+    })();
+  </script>
+
+<script>
+  (function() {
+    if (window.jQuery) {
+      Reveal.addEventListener( 'slidechanged', function(event) {  
+        window.jQuery(event.previousSlide).trigger('hidden');
+        window.jQuery(event.currentSlide).trigger('shown');
+      });
+    }
+  })();
+</script>
+
+
+  </body>
+</html>

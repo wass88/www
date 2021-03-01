@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="wass80" />
+  <meta name="dcterms.date" content="2017-03-10" />
+  <title>第2部 R言語のデータ処理</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="./reveal.js-3.3.0/css/reveal.css"/>
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; background-color: #303030; color: #cccccc; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; }
+td.sourceCode { padding-left: 5px; }
+pre, code { color: #cccccc; background-color: #303030; }
+code > span.kw { color: #f0dfaf; } /* Keyword */
+code > span.dt { color: #dfdfbf; } /* DataType */
+code > span.dv { color: #dcdccc; } /* DecVal */
+code > span.bn { color: #dca3a3; } /* BaseN */
+code > span.fl { color: #c0bed1; } /* Float */
+code > span.ch { color: #dca3a3; } /* Char */
+code > span.st { color: #cc9393; } /* String */
+code > span.co { color: #7f9f7f; } /* Comment */
+code > span.ot { color: #efef8f; } /* Other */
+code > span.al { color: #ffcfaf; } /* Alert */
+code > span.fu { color: #efef8f; } /* Function */
+code > span.er { color: #c3bf9f; } /* Error */
+code > span.wa { color: #7f9f7f; font-weight: bold; } /* Warning */
+code > span.cn { color: #dca3a3; font-weight: bold; } /* Constant */
+code > span.sc { color: #dca3a3; } /* SpecialChar */
+code > span.vs { color: #cc9393; } /* VerbatimString */
+code > span.ss { color: #cc9393; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { } /* Variable */
+code > span.cf { color: #f0dfaf; } /* ControlFlow */
+code > span.op { color: #f0efd0; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #ffcfaf; font-weight: bold; } /* Preprocessor */
+code > span.at { } /* Attribute */
+code > span.do { color: #7f9f7f; } /* Documentation */
+code > span.an { color: #7f9f7f; font-weight: bold; } /* Annotation */
+code > span.cv { color: #7f9f7f; font-weight: bold; } /* CommentVar */
+code > span.in { color: #7f9f7f; font-weight: bold; } /* Information */
+</style>
+
+<link rel="stylesheet" href="./reveal.js-3.3.0/css/theme/night.css" id="theme">
+
+<style type="text/css">
+.reveal section img {
+  background: rgba(255, 255, 255, 0.85);
+}
+</style>
+
+  <!-- some tweaks to reveal css -->
+  <style type="text/css">
+    .reveal h1 { font-size: 2.0em; }
+    .reveal h2 { font-size: 1.5em;  }
+    .reveal h3 { font-size: 1.25em;	}
+    .reveal h4 { font-size: 1em;	}
+
+    .reveal .slides>section,
+    .reveal .slides>section>section {
+      padding: 0px 0px;
+    }
+
+
+
+    .reveal table {
+      border-width: 1px;
+      border-spacing: 2px;
+      border-style: dotted;
+      border-color: gray;
+      border-collapse: collapse;
+      font-size: 0.7em;
+    }
+
+    .reveal table th {
+      border-width: 1px;
+      padding-left: 10px;
+      padding-right: 25px;
+      font-weight: bold;
+      border-style: dotted;
+      border-color: gray;
+    }
+
+    .reveal table td {
+      border-width: 1px;
+      padding-left: 10px;
+      padding-right: 25px;
+      border-style: dotted;
+      border-color: gray;
+    }
+
+  </style>
+
+    <style type="text/css">code{white-space: pre;}</style>
+
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match( /print-pdf/gi ) ? './reveal.js-3.3.0/css/print/pdf.css' : './reveal.js-3.3.0/css/print/paper.css';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+    <!--[if lt IE 9]>
+    <script src="./reveal.js-3.3.0/lib/js/html5shiv.js"></script>
+    <![endif]-->
+
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section>
+    <h1 class="title">第2部 R言語のデータ処理</h1>
+    <h2 class="author">wass80</h2>
+    <h3 class="date">2017-03-10</h3>
+</section>
+
+<section id="rでデータ処理" class="slide level2">
+<h1>Rでデータ処理</h1>
+<p>生データから情報を取り出す</p>
+<p><img src="whole.png" alt="./whole.png" /></p>
+<style>
+.reveal code {
+font-size: 150%;
+}
+</style>
+</section>
+<section id="ライブラリを使う" class="slide level2">
+<h1>ライブラリを使う</h1>
+<ul>
+<li>dplyr</li>
+<li>tdyr</li>
+<li>ggplot2</li>
+</ul>
+<p>これら全部がHadleyの作っているtidyverseライブラリ群</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tidyverse)</code></pre></div>
+</section>
+<section id="hadley" class="slide level2">
+<h1>Hadley?</h1>
+<ul>
+<li>Rの神</li>
+<li>データ解析用の様々なライブラリを提供している</li>
+</ul>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/hRNUgwAFZtQ" frameborder="0" allowfullscreen>
+</iframe>
+</section>
+<section id="r-for-data-science" class="slide level2">
+<h1>R for Data Science</h1>
+<p>Hadleyの書いたこの本を元にやっていく</p>
+<p><a href="http://r4ds.had.co.nz"><img src="./cover.png" /></a></p>
+</section>
+<section id="とりあえず実践" class="slide level2">
+<h1>とりあえず実践</h1>
+<p>Rに組み込まれているデータを使う</p>
+<ul>
+<li>iris あやめのガク(Sepal)と花弁(Petal)と品種のデータ</li>
+<li>esoph タバコと酒とガンのデータ</li>
+</ul>
+<p>などが組み込まれている</p>
+</section>
+<section id="iris" class="slide level2">
+<h1>iris</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(iris)</code></pre></div>
+<pre><code>##   Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+## 1          5.1         3.5          1.4         0.2  setosa
+## 2          4.9         3.0          1.4         0.2  setosa
+## 3          4.7         3.2          1.3         0.2  setosa
+## 4          4.6         3.1          1.5         0.2  setosa
+## 5          5.0         3.6          1.4         0.2  setosa
+## 6          5.4         3.9          1.7         0.4  setosa</code></pre>
+<p><img src="./flower.png" /></p>
+</section>
+<section id="データフレーム" class="slide level2">
+<h1>データフレーム</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(iris)</code></pre></div>
+<pre><code>## &#39;data.frame&#39;:    150 obs. of  5 variables:
+##  $ Sepal.Length: num  5.1 4.9 4.7 4.6 5 5.4 4.6 5 4.4 4.9 ...
+##  $ Sepal.Width : num  3.5 3 3.2 3.1 3.6 3.9 3.4 3.4 2.9 3.1 ...
+##  $ Petal.Length: num  1.4 1.4 1.3 1.5 1.4 1.7 1.4 1.5 1.4 1.5 ...
+##  $ Petal.Width : num  0.2 0.2 0.2 0.2 0.2 0.4 0.3 0.2 0.2 0.1 ...
+##  $ Species     : Factor w/ 3 levels &quot;setosa&quot;,&quot;versicolor&quot;,..: 1 1 1 1 1 1 1 1 1 1 ...</code></pre>
+<ul>
+<li>data.framecというclassのlist</li>
+<li>要素のvectorはすべて同じ長さ</li>
+<li>Rでのデータの表現でよく使われる</li>
+</ul>
+</section>
+<section id="とりあえずプロットしないことには" class="slide level2">
+<h1>とりあえずプロットしないことには</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)
+<span class="kw">ggplot</span>(iris) +
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">x =</span> Sepal.Width, <span class="dt">y =</span> Sepal.Length,
+                 <span class="dt">color =</span> Species))</code></pre></div>
+<p><img src="figure/unnamed-chunk-4-1.png" alt="plot of chunk unnamed-chunk-4" /></p>
+</section>
+<section id="キモい構文" class="slide level2">
+<h1>キモい構文</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(iris) +
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">x =</span> Sepal.Width, <span class="dt">y =</span> Sepal.Length,
+                 <span class="dt">color =</span> Species))</code></pre></div>
+<ul>
+<li>演算子オーバーロードです</li>
+<li><code>ggplot(data)</code>でプロットするデータを指定</li>
+<li><code>+</code>で<strong>レイヤー</strong>を重ねる</li>
+<li><code>point</code>が追加されている</li>
+<li><code>point</code>の属性には<code>x</code>,<code>y</code>.<code>color</code>,<code>size</code>等がある</li>
+</ul>
+</section>
+<section id="aes-データ系列" class="slide level2">
+<h1>aes データ系列</h1>
+<ul>
+<li>データに依存する値を指定する</li>
+<li>共通の値は<code>aes</code>に入れない</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(iris) +
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">x =</span> Sepal.Width, <span class="dt">y =</span> Sepal.Length),
+             <span class="dt">color =</span> <span class="st">&quot;blue&quot;</span>, <span class="dt">size =</span> <span class="dv">2</span>)</code></pre></div>
+<p><img src="figure/unnamed-chunk-6-1.png" alt="plot of chunk unnamed-chunk-6" /></p>
+</section>
+<section id="系統ごとにplot-facet" class="slide level2">
+<h1>系統ごとにplot (facet)</h1>
+<ul>
+<li><code>facet_wrap(~ Species)</code>を使う</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(iris) +
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">x =</span> Sepal.Width, <span class="dt">y =</span> Sepal.Length)) +
+<span class="st">  </span><span class="kw">facet_wrap</span>(~<span class="st"> </span>Species)</code></pre></div>
+<p><img src="figure/unnamed-chunk-7-1.png" alt="plot of chunk unnamed-chunk-7" /></p>
+</section>
+<section id="ヒストグラムも-stat" class="slide level2">
+<h1>ヒストグラムも (stat)</h1>
+<ul>
+<li>ヒストグラムのためには値を区切って数える前処理が必要になる</li>
+<li><code>stat</code>で前処理を指定, <code>x</code>, <code>y</code>を求めてくれる</li>
+<li>(<code>geom_bar</code>では実はデフォルト)</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(iris) +
+<span class="st">  </span><span class="kw">geom_bar</span>(<span class="kw">aes</span>(<span class="dt">x =</span> Sepal.Width, <span class="dt">fill =</span> Species),
+           <span class="dt">stat =</span> <span class="st">&quot;count&quot;</span>)</code></pre></div>
+<p><img src="figure/unnamed-chunk-8-1.png" alt="plot of chunk unnamed-chunk-8" /></p>
+</section>
+<section id="まとめ-ggplot2" class="slide level2">
+<h1>まとめ: ggplot2</h1>
+<ul>
+<li>グラフ描画ライブラリ</li>
+<li>機能はもっと豊富</li>
+</ul>
+</section>
+<section id="dplyrでデータ変形" class="slide level2">
+<h1>dplyrでデータ変形</h1>
+<ul>
+<li>大きいデータを扱うライブラリ</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(nycflights13)
+flights</code></pre></div>
+<pre><code>## # A tibble: 336,776 × 19
+##     year month   day dep_time sched_dep_time dep_delay arr_time
+##    &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt;          &lt;int&gt;     &lt;dbl&gt;    &lt;int&gt;
+## 1   2013     1     1      517            515         2      830
+## 2   2013     1     1      533            529         4      850
+## 3   2013     1     1      542            540         2      923
+## 4   2013     1     1      544            545        -1     1004
+## 5   2013     1     1      554            600        -6      812
+## 6   2013     1     1      554            558        -4      740
+## 7   2013     1     1      555            600        -5      913
+## 8   2013     1     1      557            600        -3      709
+## 9   2013     1     1      557            600        -3      838
+## 10  2013     1     1      558            600        -2      753
+## # ... with 336,766 more rows, and 12 more variables: sched_arr_time &lt;int&gt;,
+## #   arr_delay &lt;dbl&gt;, carrier &lt;chr&gt;, flight &lt;int&gt;, tailnum &lt;chr&gt;,
+## #   origin &lt;chr&gt;, dest &lt;chr&gt;, air_time &lt;dbl&gt;, distance &lt;dbl&gt;, hour &lt;dbl&gt;,
+## #   minute &lt;dbl&gt;, time_hour &lt;dttm&gt;</code></pre>
+</section>
+<section id="データテーブル" class="slide level2">
+<h1>データテーブル</h1>
+<ul>
+<li>R標準のデータフレームは遅いので, Hadleyの提供する<code>data.table</code>を使う</li>
+<li>データフレームより制約が柔軟で, 速く処理できる</li>
+<li>特にファイル入出力が速い</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(flights)</code></pre></div>
+<pre><code>## Classes &#39;tbl_df&#39;, &#39;tbl&#39; and &#39;data.frame&#39;:    336776 obs. of  19 variables:
+##  $ year          : int  2013 2013 2013 2013 2013 2013 2013 2013 2013 2013 ...
+##  $ month         : int  1 1 1 1 1 1 1 1 1 1 ...
+##  $ day           : int  1 1 1 1 1 1 1 1 1 1 ...
+##  $ dep_time      : int  517 533 542 544 554 554 555 557 557 558 ...
+##  $ sched_dep_time: int  515 529 540 545 600 558 600 600 600 600 ...
+##  $ dep_delay     : num  2 4 2 -1 -6 -4 -5 -3 -3 -2 ...
+##  $ arr_time      : int  830 850 923 1004 812 740 913 709 838 753 ...
+##  $ sched_arr_time: int  819 830 850 1022 837 728 854 723 846 745 ...
+##  $ arr_delay     : num  11 20 33 -18 -25 12 19 -14 -8 8 ...
+##  $ carrier       : chr  &quot;UA&quot; &quot;UA&quot; &quot;AA&quot; &quot;B6&quot; ...
+##  $ flight        : int  1545 1714 1141 725 461 1696 507 5708 79 301 ...
+##  $ tailnum       : chr  &quot;N14228&quot; &quot;N24211&quot; &quot;N619AA&quot; &quot;N804JB&quot; ...
+##  $ origin        : chr  &quot;EWR&quot; &quot;LGA&quot; &quot;JFK&quot; &quot;JFK&quot; ...
+##  $ dest          : chr  &quot;IAH&quot; &quot;IAH&quot; &quot;MIA&quot; &quot;BQN&quot; ...
+##  $ air_time      : num  227 227 160 183 116 150 158 53 140 138 ...
+##  $ distance      : num  1400 1416 1089 1576 762 ...
+##  $ hour          : num  5 5 5 5 6 5 6 6 6 6 ...
+##  $ minute        : num  15 29 40 45 0 58 0 0 0 0 ...
+##  $ time_hour     : POSIXct, format: &quot;2013-01-01 05:00:00&quot; &quot;2013-01-01 05:00:00&quot; ...</code></pre>
+</section>
+<section id="filter-行の抽出" class="slide level2">
+<h1>filter (行の抽出)</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">filter</span>(flights, air_time &lt;<span class="st"> </span><span class="dv">100</span>) <span class="co">#100分未満のフライト</span></code></pre></div>
+<pre><code>## # A tibble: 105,687 × 19
+##     year month   day dep_time sched_dep_time dep_delay arr_time
+##    &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt;          &lt;int&gt;     &lt;dbl&gt;    &lt;int&gt;
+## 1   2013     1     1      557            600        -3      709
+## 2   2013     1     1      559            559         0      702
+## 3   2013     1     1      629            630        -1      721
+## 4   2013     1     1      629            630        -1      824
+## 5   2013     1     1      632            608        24      740
+## 6   2013     1     1      639            640        -1      739
+## 7   2013     1     1      643            645        -2      837
+## 8   2013     1     1      645            647        -2      815
+## 9   2013     1     1      732            735        -3      857
+## 10  2013     1     1      733            736        -3      854
+## # ... with 105,677 more rows, and 12 more variables: sched_arr_time &lt;int&gt;,
+## #   arr_delay &lt;dbl&gt;, carrier &lt;chr&gt;, flight &lt;int&gt;, tailnum &lt;chr&gt;,
+## #   origin &lt;chr&gt;, dest &lt;chr&gt;, air_time &lt;dbl&gt;, distance &lt;dbl&gt;, hour &lt;dbl&gt;,
+## #   minute &lt;dbl&gt;, time_hour &lt;dttm&gt;</code></pre>
+</section>
+<section id="select-列の抽出" class="slide level2">
+<h1>select (列の抽出)</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">select</span>(flights, dep_time, arr_time) <span class="co"># 離発着時刻</span></code></pre></div>
+<pre><code>## # A tibble: 336,776 × 2
+##    dep_time arr_time
+##       &lt;int&gt;    &lt;int&gt;
+## 1       517      830
+## 2       533      850
+## 3       542      923
+## 4       544     1004
+## 5       554      812
+## 6       554      740
+## 7       555      913
+## 8       557      709
+## 9       557      838
+## 10      558      753
+## # ... with 336,766 more rows</code></pre>
+</section>
+<section id="つまり" class="slide level2">
+<h1>つまり</h1>
+<p><img src="./selector.png" /></p>
+</section>
+<section id="arrange-並び替え" class="slide level2">
+<h1>arrange (並び替え)</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">arrange</span>(flights, <span class="kw">desc</span>(arr_delay)) <span class="co"># 遅れた順</span></code></pre></div>
+<pre><code>## # A tibble: 336,776 × 19
+##     year month   day dep_time sched_dep_time dep_delay arr_time
+##    &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt;          &lt;int&gt;     &lt;dbl&gt;    &lt;int&gt;
+## 1   2013     1     9      641            900      1301     1242
+## 2   2013     6    15     1432           1935      1137     1607
+## 3   2013     1    10     1121           1635      1126     1239
+## 4   2013     9    20     1139           1845      1014     1457
+## 5   2013     7    22      845           1600      1005     1044
+## 6   2013     4    10     1100           1900       960     1342
+## 7   2013     3    17     2321            810       911      135
+## 8   2013     7    22     2257            759       898      121
+## 9   2013    12     5      756           1700       896     1058
+## 10  2013     5     3     1133           2055       878     1250
+## # ... with 336,766 more rows, and 12 more variables: sched_arr_time &lt;int&gt;,
+## #   arr_delay &lt;dbl&gt;, carrier &lt;chr&gt;, flight &lt;int&gt;, tailnum &lt;chr&gt;,
+## #   origin &lt;chr&gt;, dest &lt;chr&gt;, air_time &lt;dbl&gt;, distance &lt;dbl&gt;, hour &lt;dbl&gt;,
+## #   minute &lt;dbl&gt;, time_hour &lt;dttm&gt;</code></pre>
+</section>
+<section id="mutate-新しい列" class="slide level2">
+<h1>mutate (新しい列)</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">f &lt;-<span class="st"> </span><span class="kw">select</span>(flights, distance, air_time) <span class="co"># 距離と時間</span>
+<span class="kw">mutate</span>(f, <span class="dt">speed =</span> distance /<span class="st"> </span>air_time) <span class="co"># 速さ</span></code></pre></div>
+<pre><code>## # A tibble: 336,776 × 3
+##    distance air_time    speed
+##       &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
+## 1      1400      227 6.167401
+## 2      1416      227 6.237885
+## 3      1089      160 6.806250
+## 4      1576      183 8.612022
+## 5       762      116 6.568966
+## 6       719      150 4.793333
+## 7      1065      158 6.740506
+## 8       229       53 4.320755
+## 9       944      140 6.742857
+## 10      733      138 5.311594
+## # ... with 336,766 more rows</code></pre>
+<p><img src="./mutate.png" /></p>
+</section>
+<section id="section" class="slide level2">
+<h1>%&gt;%</h1>
+<ul>
+<li>他の言語で言うパイプ</li>
+<li>右辺の返り値を左辺の第1引数にする</li>
+<li>tidyverseライブラリで提供されている</li>
+<li>途中の一時変数がなくなる</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">5</span>) %&gt;%<span class="st"> </span><span class="kw">mean</span>()</code></pre></div>
+<pre><code>## [1] 3</code></pre>
+</section>
+<section id="さっきと同じもの" class="slide level2">
+<h1>さっきと同じもの</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">flights %&gt;%
+<span class="st">  </span><span class="kw">select</span>(distance, air_time) %&gt;%<span class="st"> </span><span class="co"># select(flight, ...)</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">speed =</span> distance /<span class="st"> </span>air_time)</code></pre></div>
+</section>
+<section id="summarize-縮約" class="slide level2">
+<h1>summarize (縮約)</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">flights %&gt;%
+<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">delay =</span> <span class="kw">mean</span>(arr_delay, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)) <span class="co"># 平均遅れ</span></code></pre></div>
+<pre><code>## # A tibble: 1 × 1
+##      delay
+##      &lt;dbl&gt;
+## 1 6.895377</code></pre>
+<p><img src="./summarise.png" /></p>
+</section>
+<section id="group_by" class="slide level2">
+<h1>group_by</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">flights %&gt;%
+<span class="st">  </span><span class="kw">group_by</span>(dest) %&gt;%<span class="st"> </span><span class="co"># 目的地ごとに</span>
+<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">delay =</span> <span class="kw">mean</span>(arr_delay, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)) <span class="co"># 平均遅れ</span></code></pre></div>
+<pre><code>## # A tibble: 105 × 2
+##     dest     delay
+##    &lt;chr&gt;     &lt;dbl&gt;
+## 1    ABQ  4.381890
+## 2    ACK  4.852273
+## 3    ALB 14.397129
+## 4    ANC -2.500000
+## 5    ATL 11.300113
+## 6    AUS  6.019909
+## 7    AVL  8.003831
+## 8    BDL  7.048544
+## 9    BGR  8.027933
+## 10   BHM 16.877323
+## # ... with 95 more rows</code></pre>
+<p><img src="./group_by.png" /></p>
+</section>
+<section id="これsqlでは" class="slide level2">
+<h1>これSQLでは?</h1>
+<ul>
+<li>実際, sqlliteの操作などにも使える</li>
+<li>dplyrはデータベースに対する, 一般的なAPI</li>
+</ul>
+</section>
+<section id="まとめ-dplyr" class="slide level2">
+<h1>まとめ: dplyr</h1>
+<ul>
+<li>データベースに対する処理を行う</li>
+</ul>
+</section>
+<section id="紹介-tidyr" class="slide level2">
+<h1>紹介: tidyr</h1>
+<ul>
+<li>データの整形をして, dplyrで扱えるようにするライブラリ</li>
+</ul>
+<p><img src="./tidyr.png" /></p>
+</section>
+<section id="データ解析の流れ" class="slide level2">
+<h1>データ解析の流れ</h1>
+<p><img src="./model.png" /></p>
+<ul>
+<li>ビジュアライズとデータ変形を見てきた</li>
+<li>ここからModelを見出すことでデータ処理が完了する</li>
+<li>Modelとは変数の関係性のこと</li>
+</ul>
+</section>
+<section id="modelの発見" class="slide level2">
+<h1>Modelの発見</h1>
+<ul>
+<li>まず, モデル群を考える
+<ul>
+<li><code>Y = a_1 X + a_2</code></li>
+<li><code>Z = a_1 X * a_2 Y + a_3</code></li>
+<li>など</li>
+</ul></li>
+<li>次にデータに合う係数を見つける</li>
+</ul>
+</section>
+<section id="実践" class="slide level2">
+<h1>実践</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(modelr)
+<span class="kw">ggplot</span>(sim1) +<span class="st"> </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">x=</span>x, <span class="dt">y=</span>y))</code></pre></div>
+<p><img src="figure/unnamed-chunk-19-1.png" alt="plot of chunk unnamed-chunk-19" /></p>
+<p>このデータに適合するモデルを考える</p>
+</section>
+<section id="線形モデル" class="slide level2">
+<h1>線形モデル</h1>
+<ul>
+<li><code>Y = a_1 X + a_2</code>をモデル群として考える</li>
+<li>ランダムに作った<code>model_a</code>を係数として, どの直線が最も適合するか</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">model_a &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">a1 =</span> <span class="kw">runif</span>(<span class="dv">200</span>, -<span class="dv">5</span>, <span class="dv">5</span>),
+                      <span class="dt">a2 =</span> <span class="kw">runif</span>(<span class="dv">200</span>, -<span class="dv">20</span>, <span class="dv">40</span>))</code></pre></div>
+<p><img src="figure/unnamed-chunk-21-1.png" alt="plot of chunk unnamed-chunk-21" /></p>
+</section>
+<section id="最小二乗法" class="slide level2">
+<h1>最小二乗法</h1>
+<ul>
+<li>モデルに対して, Y軸での差の2乗の平均の平方根が小さいものが良いモデルとする</li>
+</ul>
+<p><img src="./model-fit.png" /></p>
+</section>
+<section id="簡単にできるところまで" class="slide level2">
+<h1>簡単にできるところまで</h1>
+<p>モデルを関数で定義</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my_model &lt;-<span class="st"> </span>function(a1, a2, data) a1 *<span class="st"> </span>data$x +<span class="st"> </span>a2
+mini_data &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>), <span class="dt">y=</span><span class="kw">c</span>(<span class="dv">3</span>,<span class="dv">5</span>))
+<span class="kw">my_model</span>(<span class="dv">2</span>, <span class="dv">5</span>, mini_data)</code></pre></div>
+<pre><code>## [1] 7 9</code></pre>
+<p>Y軸での差を求める</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">measure_distance &lt;-<span class="st"> </span>function(a1, a2) {
+  diff &lt;-<span class="st"> </span>sim1$y -<span class="st"> </span><span class="kw">my_model</span>(a1, a2, sim1)
+  <span class="kw">sqrt</span>(<span class="kw">mean</span>(diff ^<span class="st"> </span><span class="dv">2</span>)) <span class="co"># 各要素の2乗の平均の平方根</span>
+}</code></pre></div>
+</section>
+<section id="差を求めてみる" class="slide level2">
+<h1>差を求めてみる</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">model_a &lt;-<span class="st"> </span>model_a %&gt;%
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">dist =</span> purrr::<span class="kw">map2_dbl</span>(a1, a2, measure_distance))</code></pre></div>
+<ul>
+<li>distで先程のmodelの直線をを色付</li>
+<li>黒いものほど, 適合したmodelと言える</li>
+</ul>
+<p><img src="figure/unnamed-chunk-25-1.png" alt="plot of chunk unnamed-chunk-25" /></p>
+</section>
+<section id="実際に求める" class="slide level2">
+<h1>実際に求める</h1>
+<p><code>lm</code>にモデル群とデータを渡す</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sim1_a &lt;-<span class="st"> </span><span class="kw">lm</span>(y ~<span class="st"> </span>x, <span class="dt">data =</span> sim1)
+sim1_a$coefficients</code></pre></div>
+<pre><code>## (Intercept)           x 
+##    4.220822    2.051533</code></pre>
+<p><img src="figure/unnamed-chunk-27-1.png" alt="plot of chunk unnamed-chunk-27" /></p>
+<p>良さそう</p>
+</section>
+<section id="まとめ-モデル" class="slide level2">
+<h1>まとめ: モデル</h1>
+<ul>
+<li>データから結論を見つける</li>
+<li>モデルは線形以外にも多く有る</li>
+</ul>
+</section>
+<section id="大まとめ" class="slide level2">
+<h1>大まとめ</h1>
+<p><img src="./com.png" /></p>
+<ul>
+<li>データ解析の流れとして以下を見てきた
+<ul>
+<li>整形: tidyr</li>
+<li>ビジュアライズ: ggplot</li>
+<li>変形: dplyr (+ purrr)</li>
+<li>モデル: Modelr (+ broom)</li>
+</ul></li>
+<li>Haddlyさんは情報発信まで含めてデータ解析と言ってる</li>
+</ul>
+</section>
+<section id="ところで" class="slide level2">
+<h1>ところで</h1>
+<ul>
+<li>さっきから出てくる構文気持ち悪く無いですか?
+<ul>
+<li><code>y ~ x</code>って何?</li>
+<li><code>aes(x = x, y = y), data = sim1</code>も不思議</li>
+<li><code>library(dplyr)</code>も変では</li>
+<li><code>%&gt;%</code> ってどうやって定義されてるの</li>
+</ul></li>
+<li>メタプログラミング編へ</li>
+</ul>
+</section>
+    </div>
+  </div>
+
+  <script src="./reveal.js-3.3.0/lib/js/head.min.js"></script>
+  <script src="./reveal.js-3.3.0/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Vertical centering of slides
+        center: false,
+        // Transition style
+        transition: 'default', // none/fade/slide/convex/concave/zoom
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'default', // none/fade/slide/convex/concave/zoom
+
+
+        // Optional reveal.js plugins
+        dependencies: [
+        ]
+      });
+    </script>
+  <!-- dynamically load mathjax for compatibility with self-contained -->
+  <script>
+    (function () {
+      var script = document.createElement("script");
+      script.type = "text/javascript";
+      script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+      document.getElementsByTagName("head")[0].appendChild(script);
+    })();
+  </script>
+
+<script>
+  (function() {
+    if (window.jQuery) {
+      Reveal.addEventListener( 'slidechanged', function(event) {  
+        window.jQuery(event.previousSlide).trigger('hidden');
+        window.jQuery(event.currentSlide).trigger('shown');
+      });
+    }
+  })();
+</script>
+
+
+  </body>
+</html>

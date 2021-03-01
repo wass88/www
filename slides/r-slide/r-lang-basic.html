@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="wass80" />
+  <meta name="dcterms.date" content="2017-03-10" />
+  <title>第1部 R言語の基礎</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="./reveal.js-3.3.0/css/reveal.css"/>
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; background-color: #303030; color: #cccccc; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; }
+td.sourceCode { padding-left: 5px; }
+pre, code { color: #cccccc; background-color: #303030; }
+code > span.kw { color: #f0dfaf; } /* Keyword */
+code > span.dt { color: #dfdfbf; } /* DataType */
+code > span.dv { color: #dcdccc; } /* DecVal */
+code > span.bn { color: #dca3a3; } /* BaseN */
+code > span.fl { color: #c0bed1; } /* Float */
+code > span.ch { color: #dca3a3; } /* Char */
+code > span.st { color: #cc9393; } /* String */
+code > span.co { color: #7f9f7f; } /* Comment */
+code > span.ot { color: #efef8f; } /* Other */
+code > span.al { color: #ffcfaf; } /* Alert */
+code > span.fu { color: #efef8f; } /* Function */
+code > span.er { color: #c3bf9f; } /* Error */
+code > span.wa { color: #7f9f7f; font-weight: bold; } /* Warning */
+code > span.cn { color: #dca3a3; font-weight: bold; } /* Constant */
+code > span.sc { color: #dca3a3; } /* SpecialChar */
+code > span.vs { color: #cc9393; } /* VerbatimString */
+code > span.ss { color: #cc9393; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { } /* Variable */
+code > span.cf { color: #f0dfaf; } /* ControlFlow */
+code > span.op { color: #f0efd0; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #ffcfaf; font-weight: bold; } /* Preprocessor */
+code > span.at { } /* Attribute */
+code > span.do { color: #7f9f7f; } /* Documentation */
+code > span.an { color: #7f9f7f; font-weight: bold; } /* Annotation */
+code > span.cv { color: #7f9f7f; font-weight: bold; } /* CommentVar */
+code > span.in { color: #7f9f7f; font-weight: bold; } /* Information */
+</style>
+
+<link rel="stylesheet" href="./reveal.js-3.3.0/css/theme/night.css" id="theme">
+
+<style type="text/css">
+.reveal section img {
+  background: rgba(255, 255, 255, 0.85);
+}
+</style>
+
+  <!-- some tweaks to reveal css -->
+  <style type="text/css">
+    .reveal h1 { font-size: 2.0em; }
+    .reveal h2 { font-size: 1.5em;  }
+    .reveal h3 { font-size: 1.25em;	}
+    .reveal h4 { font-size: 1em;	}
+
+    .reveal .slides>section,
+    .reveal .slides>section>section {
+      padding: 0px 0px;
+    }
+
+
+
+    .reveal table {
+      border-width: 1px;
+      border-spacing: 2px;
+      border-style: dotted;
+      border-color: gray;
+      border-collapse: collapse;
+      font-size: 0.7em;
+    }
+
+    .reveal table th {
+      border-width: 1px;
+      padding-left: 10px;
+      padding-right: 25px;
+      font-weight: bold;
+      border-style: dotted;
+      border-color: gray;
+    }
+
+    .reveal table td {
+      border-width: 1px;
+      padding-left: 10px;
+      padding-right: 25px;
+      border-style: dotted;
+      border-color: gray;
+    }
+
+  </style>
+
+    <style type="text/css">code{white-space: pre;}</style>
+
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match( /print-pdf/gi ) ? './reveal.js-3.3.0/css/print/pdf.css' : './reveal.js-3.3.0/css/print/paper.css';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+    <!--[if lt IE 9]>
+    <script src="r-lang-basic_files/reveal.js-3.3.0/lib/js/html5shiv.js"></script>
+    <![endif]-->
+
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section>
+    <h1 class="title">第1部 R言語の基礎</h1>
+    <h2 class="author">wass80</h2>
+    <h3 class="date">2017-03-10</h3>
+</section>
+
+<section id="自己紹介" class="slide level2">
+<h1>自己紹介</h1>
+<ul>
+<li>情報学科計算機 新3回 wass80</li>
+<li>趣味: ボドゲ, ボカロ</li>
+<li>後期のプロジェクトは飯作ってばっかりだった気がする</li>
+<li>去年に引き続きバイトでのネタ</li>
+</ul>
+<style>
+.reveal code {
+font-size: 150%;
+}
+</style>
+</section>
+<section id="r言語の利点" class="slide level2">
+<h1>R言語の利点</h1>
+<ul>
+<li>豊富なライブラリ</li>
+</ul>
+<p><img src="./r.png" /></p>
+</section>
+<section id="バイトでrを使う理由" class="slide level2">
+<h1>バイトでRを使う理由</h1>
+<ul>
+<li>生物系のライブラリが異常に多いから</li>
+<li>生物のRライブラリリポジトリBioconductorには<br />
+1000以上もライブラリが登録されている</li>
+<li>ほとんどが論文付き</li>
+</ul>
+<p><a href="./bio.gif"></a></p>
+</section>
+<section id="このスライドの目的" class="slide level2">
+<h1>このスライドの目的</h1>
+<p>R言語を書かざるをえなくなった人が</p>
+<ul>
+<li>独特な仕様を理解してつまづきを減らす</li>
+<li>データ解析する</li>
+<li>メタプログラミングする</li>
+</ul>
+<p>R言語の名を知っているぐらいの人が対象</p>
+</section>
+<section id="スライドの構成" class="slide level2">
+<h1>スライドの構成</h1>
+<ul>
+<li>第1部はR言語の基本</li>
+<li>第2部は実際にデータ解析</li>
+<li>第3部はメタプログラミング</li>
+</ul>
+</section>
+<section id="環境構築" class="slide level2">
+<h1>環境構築</h1>
+</section>
+<section id="起動" class="slide level2">
+<h1>起動</h1>
+</section>
+<section id="この型は" class="slide level2">
+<h1>この型は?</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="dv">42</span></code></pre></div>
+<pre><code>## [1] 42</code></pre>
+<p>の型はわかりますか</p>
+</section>
+<section id="答え" class="slide level2">
+<h1>答え</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="dv">42</span></code></pre></div>
+<pre><code>## [1] 42</code></pre>
+<p><strong>1要素の数値型ベクトル</strong></p>
+<p><strong>ベクトルの挙動を知らずにRは書けない</strong></p>
+</section>
+<section id="変数束縛" class="slide level2">
+<h1>変数束縛</h1>
+<p><code>識別子 &lt;- 式</code></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span><span class="dv">1</span>
+y &lt;-<span class="st"> </span><span class="dv">1</span>
+x +<span class="st"> </span>y</code></pre></div>
+<pre><code>## [1] 2</code></pre>
+</section>
+<section id="rの変数束縛" class="slide level2">
+<h1>Rの変数束縛</h1>
+<ul>
+<li>ドットも識別子</li>
+<li>逆向き束縛<code>-&gt;</code>もある</li>
+<li>snake_case推奨</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">a.b &lt;-<span class="st"> </span><span class="dv">2</span>
+<span class="dv">1</span> -&gt;<span class="st"> </span>z
+a.b +<span class="st"> </span>z</code></pre></div>
+<pre><code>## [1] 3</code></pre>
+<p>現在の環境を表示</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ls</span>()</code></pre></div>
+<pre><code>## [1] &quot;a.b&quot; &quot;x&quot;   &quot;y&quot;   &quot;z&quot;</code></pre>
+</section>
+<section id="ベクトルの型" class="slide level2">
+<h1>ベクトルの型</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">FALSE</span>, T, F)  <span class="co"># 論理値(logical)</span>
+<span class="kw">c</span>(1L, -2L) <span class="co"># 数値(integer) Lをつけないとdouble</span>
+<span class="kw">c</span>(<span class="fl">1.1</span>, <span class="fl">1e10</span>)   <span class="co"># 小数(double)</span>
+<span class="kw">c</span>(<span class="st">&quot;1.1&quot;</span>, <span class="st">&quot;a&quot;</span>) <span class="co"># 文字列(character)</span></code></pre></div>
+<ul>
+<li>上から下に暗黙の型変換が起きる</li>
+<li>ベクトルの型は基本的にこれらのみ</li>
+</ul>
+</section>
+<section id="vector" class="slide level2">
+<h1>vector</h1>
+<ul>
+<li>ベクトル</li>
+<li>コロン演算子で連続した数値ベクトルを作る</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="dv">1</span>:<span class="dv">25</span></code></pre></div>
+<pre><code>##  [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
+## [24] 24 25</code></pre>
+</section>
+<section id="ベクトル操作" class="slide level2">
+<h1>ベクトル操作</h1>
+<p>5番目を取り出す (<strong>初めの要素は1番目</strong>)</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">a &lt;-<span class="st"> </span><span class="dv">2</span>:<span class="dv">7</span>
+a[<span class="dv">5</span>] </code></pre></div>
+<pre><code>## [1] 6</code></pre>
+<p>5番目を変更</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">a[<span class="dv">5</span>] &lt;-<span class="st"> </span><span class="dv">42</span>
+a</code></pre></div>
+<pre><code>## [1]  2  3  4  5 42  7</code></pre>
+</section>
+<section id="要素のベクトル" class="slide level2">
+<h1>1要素のベクトル</h1>
+<p><strong>スカラー(値)は1要素のベクトル</strong></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="dv">5</span></code></pre></div>
+<pre><code>## [1] 5</code></pre>
+<p>1要素のベクトルの1要素目の1要素目の1要素目</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="dv">42</span>[<span class="dv">1</span>][<span class="dv">1</span>][<span class="dv">1</span>]</code></pre></div>
+<pre><code>## [1] 42</code></pre>
+</section>
+<section id="ベクトルの結合" class="slide level2">
+<h1>ベクトルの結合</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">c</span>(<span class="dv">2</span>:<span class="dv">5</span>,<span class="dv">3</span>:<span class="dv">1</span>) <span class="co"># Concat(結合)のC</span></code></pre></div>
+<pre><code>## [1] 2 3 4 5 3 2 1</code></pre>
+<p>1要素のベクトルの結合</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">4</span>,<span class="dv">3</span>) <span class="co"># ベクトルのリテラル表現</span></code></pre></div>
+<pre><code>## [1] 1 4 3</code></pre>
+<ul>
+<li><strong>ベクトルはネストできない</strong></li>
+<li><strong>ベクトルをベクトルの要素に出来ない</strong></li>
+</ul>
+</section>
+<section id="ベクトルはネストできない" class="slide level2">
+<h1>ベクトルはネストできない</h1>
+<ul>
+<li>ベクトルに潰される(ようにみえる)</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">a &lt;-<span class="st"> </span><span class="dv">1</span>:<span class="dv">3</span>
+b &lt;-<span class="st"> </span><span class="dv">2</span>:<span class="dv">3</span>
+<span class="kw">c</span>(a, b, <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">5</span>))</code></pre></div>
+<pre><code>## [1] 1 2 3 2 3 1 3 5</code></pre>
+</section>
+<section id="ベクトルの型変換" class="slide level2">
+<h1>ベクトルの型変換</h1>
+<p>ベクトルは同じ型を持つように型変換される</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="dv">1</span>, <span class="fl">1.1</span>)</code></pre></div>
+<pre><code>## [1] 1.0 1.0 1.1</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">c</span>(<span class="dv">1</span>:<span class="dv">5</span>, <span class="st">&quot;a&quot;</span>)</code></pre></div>
+<pre><code>## [1] &quot;1&quot; &quot;2&quot; &quot;3&quot; &quot;4&quot; &quot;5&quot; &quot;a&quot;</code></pre>
+</section>
+<section id="null" class="slide level2">
+<h1>NULL</h1>
+<ul>
+<li>0要素を表す特殊なNULL型ベクトル</li>
+<li>空集合の表現</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="ot">NULL</span></code></pre></div>
+<pre><code>## NULL</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">c</span>(<span class="ot">NULL</span>, <span class="dv">1</span>:<span class="dv">4</span>, <span class="ot">NULL</span>)</code></pre></div>
+<pre><code>## [1] 1 2 3 4</code></pre>
+</section>
+<section id="na" class="slide level2">
+<h1>NA</h1>
+<ul>
+<li>どの型のベクトルの要素にもなれる</li>
+<li>欠損値(Not Available)</li>
+<li>NULLと混同しないように</li>
+<li>殆どの結果がNA</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="ot">NA</span>,<span class="dv">4</span>)</code></pre></div>
+<pre><code>## [1]  1  2 NA  4</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="ot">NA</span> ==<span class="st"> </span><span class="ot">NA</span></code></pre></div>
+<pre><code>## [1] NA</code></pre>
+</section>
+<section id="まとめ-ベクトル" class="slide level2">
+<h1>まとめ: ベクトル</h1>
+<ul>
+<li><strong>スカラーは1要素のベクトル</strong></li>
+<li>ベクトルの要素は同じ型</li>
+<li>ベクトルをベクトルの要素に出来ない</li>
+<li>NULLは0要素ベクトル</li>
+<li>NAは要素</li>
+</ul>
+</section>
+<section id="ベクトル化された関数n-n" class="slide level2">
+<h1>ベクトル化された関数(N-&gt;N)</h1>
+<p>ベクトルを与えることで要素ごとに計算する</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sqrt</span>(<span class="dv">2</span>)</code></pre></div>
+<pre><code>## [1] 1.414214</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sqrt</span>(<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">4</span>,<span class="dv">9</span>,<span class="dv">16</span>,<span class="dv">25</span>))</code></pre></div>
+<pre><code>## [1] 1 2 3 4 5</code></pre>
+</section>
+<section id="kou2" class="slide level2">
+<h1>ベクトルの2項演算(NxN-&gt;N)</h1>
+<p>map演算</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="dv">1</span> +<span class="st"> </span><span class="dv">3</span></code></pre></div>
+<pre><code>## [1] 4</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>) +<span class="st"> </span><span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">4</span>,<span class="dv">6</span>)</code></pre></div>
+<pre><code>## [1] 3 6 9</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>) ==<span class="st"> </span><span class="kw">c</span>(<span class="dv">3</span>,<span class="dv">1</span>,<span class="dv">2</span>)</code></pre></div>
+<pre><code>## [1] FALSE  TRUE FALSE</code></pre>
+</section>
+<section id="リサイクル" class="slide level2">
+<h1>リサイクル</h1>
+<p>要素が足りない場合, 繰り返して補う</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="dv">1</span>:<span class="dv">5</span> +<span class="st"> </span><span class="dv">3</span> <span class="co"># 1:5 + c(3,3,3,3,3)</span></code></pre></div>
+<pre><code>## [1] 4 5 6 7 8</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="dv">1</span>:<span class="dv">2</span> +<span class="st"> </span><span class="dv">1</span>:<span class="dv">6</span> <span class="co"># c(1,2,1,2,1,2) + 1:6</span></code></pre></div>
+<pre><code>## [1] 2 4 4 6 6 8</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">c</span>(<span class="dv">3</span>,<span class="dv">1</span>,<span class="dv">2</span>) ==<span class="st"> </span><span class="dv">1</span> <span class="co"># c(3,1,2) == c(1,1,1)</span></code></pre></div>
+<pre><code>## [1] FALSE  TRUE FALSE</code></pre>
+</section>
+<section id="縮約関数n-1" class="slide level2">
+<h1>縮約関数(N-&gt;1)</h1>
+<p>ベクトルを取ってスカラーを返す関数</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean</span>(<span class="dv">1</span>:<span class="dv">10</span>)</code></pre></div>
+<pre><code>## [1] 5.5</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">var</span>(<span class="dv">1</span>:<span class="dv">10</span>)</code></pre></div>
+<pre><code>## [1] 9.166667</code></pre>
+</section>
+<section id="ベクトル化の嬉しさ" class="slide level2">
+<h1>ベクトル化の嬉しさ</h1>
+<p>モンテカルロ法で円周率を求める例</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">s &lt;-<span class="st"> </span><span class="dv">1000</span>
+<span class="kw">sum</span>(<span class="kw">runif</span>(s)^<span class="dv">2</span>+<span class="kw">runif</span>(s)^<span class="dv">2</span> &lt;=<span class="st"> </span><span class="dv">1</span>)*<span class="dv">4</span>/s</code></pre></div>
+<pre><code>## [1] 3.048</code></pre>
+</section>
+<section id="意味" class="slide level2">
+<h1>意味</h1>
+<p>ランダムに点をまいて, 四分円の内側を数える <img src="figure/unnamed-chunk-24-1.png" alt="plot of chunk unnamed-chunk-24" /></p>
+</section>
+<section id="説明" class="slide level2">
+<h1>説明</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">runif</span>(<span class="dv">5</span>) <span class="co"># Random UNIFication</span></code></pre></div>
+<pre><code>## [1] 0.99240864 0.09130816 0.20068849 0.85771570 0.32205799</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum</span>(<span class="kw">c</span>(T,F,T,T,F)) <span class="co"># Tは1 Fは0に型変換</span></code></pre></div>
+<pre><code>## [1] 3</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum</span>(<span class="kw">runif</span>(s)^<span class="dv">2</span>+<span class="kw">runif</span>(s)^<span class="dv">2</span> &lt;=<span class="st"> </span><span class="dv">1</span>)*<span class="dv">4</span>/s</code></pre></div>
+<pre><code>## [1] 3.12</code></pre>
+</section>
+<section id="ループだとダメなの" class="slide level2">
+<h1>ループだとダメなの?</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res &lt;-<span class="st"> </span><span class="dv">0</span>
+for(i in <span class="dv">1</span>:s){
+  res &lt;-<span class="st"> </span>res +<span class="st"> </span>(<span class="kw">runif</span>(<span class="dv">1</span>)^<span class="dv">2</span>+<span class="kw">runif</span>(<span class="dv">1</span>)^<span class="dv">2</span> &lt;=<span class="st"> </span><span class="dv">1</span>)
+}
+res *<span class="st"> </span><span class="dv">4</span> /<span class="st"> </span>s</code></pre></div>
+<pre><code>## [1] 3.248</code></pre>
+</section>
+<section id="速度比較" class="slide level2">
+<h1>速度比較</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(microbenchmark)
+s &lt;-<span class="st"> </span><span class="dv">1000</span>
+bench &lt;-<span class="st"> </span><span class="kw">microbenchmark</span>(<span class="kw">vec_f</span>(s), <span class="kw">loop_f</span>(s))</code></pre></div>
+<p>(microsecond)</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">min</th>
+<th style="text-align: right;">lq</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">median</th>
+<th style="text-align: right;">uq</th>
+<th style="text-align: right;">max</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">vec_f</td>
+<td style="text-align: right;">288</td>
+<td style="text-align: right;">295</td>
+<td style="text-align: right;">319</td>
+<td style="text-align: right;">304</td>
+<td style="text-align: right;">310</td>
+<td style="text-align: right;">530</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">loop_f</td>
+<td style="text-align: right;">11900</td>
+<td style="text-align: right;">12300</td>
+<td style="text-align: right;">16600</td>
+<td style="text-align: right;">12600</td>
+<td style="text-align: right;">14200</td>
+<td style="text-align: right;">281000</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>ベクトル化しないと50倍から100倍遅くなるケースがある</li>
+<li>従ってベクトル化出来ないならRで書くべきではない</li>
+</ul>
+</section>
+<section id="rを使うべきではない" class="slide level2">
+<h1>Rを使うべきではない？？？</h1>
+<ul>
+<li>スクリプト言語としてRはほぼ最遅</li>
+<li>Rの紹介本でPerlやPythonが紹介されていることがある</li>
+<li>Rで書きにくい処理は無理に書くべきではない</li>
+<li>統計処理用の言語だと割り切ろう</li>
+</ul>
+</section>
+<section id="関数" class="slide level2">
+<h1>関数</h1>
+<ul>
+<li><code>function</code>で作る</li>
+<li>イコールは名前付き引数の構文</li>
+<li>式の場合<code>{}</code>は不要</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sub &lt;-<span class="st"> </span>function(x,y) x -<span class="st"> </span>y
+<span class="kw">sub</span>(<span class="dv">5</span>,<span class="dv">3</span>)</code></pre></div>
+<pre><code>## [1] 2</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sub</span>(<span class="dt">y =</span> <span class="dv">10</span>, <span class="dt">x =</span> <span class="dv">5</span>) <span class="co"># 名前付き引数</span></code></pre></div>
+<pre><code>## [1] -5</code></pre>
+</section>
+<section id="factor因子" class="slide level2">
+<h1>factor(因子)</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(sex &lt;-<span class="st"> </span><span class="kw">factor</span>(<span class="kw">c</span>(<span class="st">&quot;M&quot;</span>,<span class="st">&quot;F&quot;</span>,<span class="st">&quot;F&quot;</span>), <span class="dt">levels =</span> <span class="kw">c</span>(<span class="st">&quot;M&quot;</span>, <span class="st">&quot;F&quot;</span>)))</code></pre></div>
+<pre><code>## [1] M F F
+## Levels: M F</code></pre>
+<ul>
+<li>有限集合表現</li>
+<li>内部的には<strong>integerのvector</strong>であることを覚えておく</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(sex)</code></pre></div>
+<pre><code>##  Factor w/ 2 levels &quot;M&quot;,&quot;F&quot;: 1 2 2</code></pre>
+</section>
+<section id="list" class="slide level2">
+<h1>list</h1>
+<p>連想配列</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(obj &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">one=</span><span class="dv">1</span>, <span class="dt">two=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>), <span class="dt">three=</span><span class="st">&quot;3&quot;</span>))</code></pre></div>
+<pre><code>## $one
+## [1] 1
+## 
+## $two
+## [1] 1 1 1
+## 
+## $three
+## [1] &quot;3&quot;</code></pre>
+</section>
+<section id="listへのアクセス" class="slide level2">
+<h1>listへのアクセス</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print_list</span>(obj) <span class="co">#list表示用に定義した関数</span></code></pre></div>
+<pre><code>## $one: 1; $two: c(1, 1, 1); $three: 3</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">obj$one</code></pre></div>
+<pre><code>## [1] 1</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">obj[[<span class="st">&quot;two&quot;</span>]]</code></pre></div>
+<pre><code>## [1] 1 1 1</code></pre>
+<ul>
+<li>異なる型でも格納できる</li>
+<li><code>$</code>か<code>[[</code>でアクセス</li>
+</ul>
+</section>
+<section id="属性" class="slide level2">
+<h1>属性</h1>
+<ul>
+<li>オブジェクトの付加情報</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print_list</span>(<span class="kw">attributes</span>(obj)) <span class="co"># List</span></code></pre></div>
+<pre><code>## $names: c(&quot;one&quot;, &quot;two&quot;, &quot;three&quot;)</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print_list</span>(<span class="kw">attributes</span>(sex)) <span class="co"># Factor</span></code></pre></div>
+<pre><code>## $levels: c(&quot;M&quot;, &quot;F&quot;); $class: factor</code></pre>
+<ul>
+<li><code>str</code>では見えない情報が見える</li>
+</ul>
+</section>
+<section id="s3-ジェネリック" class="slide level2">
+<h1>S3 ジェネリック</h1>
+<ul>
+<li>付加情報<code>class</code>を利用したジェネリックな関数</li>
+<li>同じ名前の関数でも<code>class</code>によって関数を呼び分ける</li>
+<li>例: <code>str</code>関数は引数によって実際は以下の関数に振り分けられる</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">methods</span>(<span class="st">&quot;str&quot;</span>)</code></pre></div>
+<pre><code>##  [1] str.data.frame*       str.Date*             str.default*         
+##  [4] str.dendrogram*       str.logLik*           str.POSIXt*          
+##  [7] str.Rcpp_stack_trace* str.root_criteria*    str.uneval*          
+## [10] str.unit.arithmetic* 
+## see &#39;?methods&#39; for accessing help and source code</code></pre>
+</section>
+<section id="s3の例" class="slide level2">
+<h1>S3の例</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my_method &lt;-<span class="st"> </span>function(x) <span class="kw">UseMethod</span>(<span class="st">&quot;my_method&quot;</span>)
+my_method.a &lt;-<span class="st"> </span>function(o) <span class="kw">cat</span>(<span class="st">&quot;called by a&quot;</span>, o$a)
+my_method.default &lt;-<span class="st"> </span>function(o) <span class="kw">cat</span>(<span class="st">&quot;called by defalut&quot;</span>)
+obj &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">x =</span> <span class="dv">1</span>)
+<span class="kw">class</span>(obj) &lt;-<span class="st"> &quot;a&quot;</span> <span class="co"># class属性を&quot;a&quot;に</span>
+<span class="kw">my_method</span>(obj) <span class="co"># my_method.a が呼ばれる</span></code></pre></div>
+<pre><code>## called by a</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">class</span>(obj) &lt;-<span class="st"> &quot;b&quot;</span> <span class="co"># class属性を&quot;b&quot;に</span>
+<span class="kw">my_method</span>(obj) <span class="co"># 無いのでmy_method.defualtが呼ばれる</span></code></pre></div>
+<pre><code>## called by defalut</code></pre>
+<ul>
+<li>ちなみにclassは複数持てる (継承の役割)</li>
+</ul>
+</section>
+<section id="s3ガバガバでは" class="slide level2">
+<h1>S3ガバガバでは?</h1>
+<ul>
+<li>ガバガバ。ただ, 自分でいじる必要はない</li>
+<li>S3はの中身は大抵単なるリスト</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">num &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>)
+<span class="kw">class</span>(num)</code></pre></div>
+<pre><code>## [1] &quot;numeric&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">class</span>(num) &lt;-<span class="st"> &quot;Date&quot;</span>
+<span class="kw">str</span>(num) <span class="co"># 日付に!?</span></code></pre></div>
+<pre><code>##  Date[1:3], format: &quot;1970-01-02&quot; &quot;1970-01-03&quot; &quot;1970-01-04&quot;</code></pre>
+</section>
+<section id="s4-クラス" class="slide level2">
+<h1>S4 クラス</h1>
+<ul>
+<li>S3を厳密にしたもの</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">setClass</span>(<span class="st">&quot;Person&quot;</span>,
+  <span class="dt">slots=</span><span class="kw">list</span>(<span class="dt">name=</span><span class="st">&quot;character&quot;</span>, <span class="dt">age=</span><span class="st">&quot;integer&quot;</span>))
+<span class="kw">str</span>(me &lt;-<span class="st"> </span><span class="kw">new</span>(<span class="st">&quot;Person&quot;</span>, <span class="dt">name=</span><span class="st">&quot;wass&quot;</span>, <span class="dt">age=</span>20L))</code></pre></div>
+<pre><code>## Formal class &#39;Person&#39; [package &quot;.GlobalEnv&quot;] with 2 slots
+##   ..@ name: chr &quot;wass&quot;
+##   ..@ age : int 20</code></pre>
+</section>
+<section id="s4-クラスのスロット" class="slide level2">
+<h1>S4 クラスのスロット</h1>
+<p><code>@</code>でアクセスする</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">me@name</code></pre></div>
+<pre><code>## [1] &quot;wass&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">me@age</code></pre></div>
+<pre><code>## [1] 20</code></pre>
+</section>
+<section id="s4の安全性" class="slide level2">
+<h1>S4の安全性</h1>
+<ul>
+<li>存在しないスロット作れない</li>
+<li>スロットと同じ型しか代入できない</li>
+<li>クラスを変更できない</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">try</span>(me@weight &lt;-<span class="st"> </span><span class="dv">80</span>)
+<span class="kw">try</span>(me@age &lt;-<span class="st"> &quot;a&quot;</span>)
+<span class="kw">try</span>(<span class="kw">class</span>(me) &lt;-<span class="st"> &quot;factor&quot;</span>)</code></pre></div>
+<p>中身がリストのS3の場合, どれも出来てしまう</p>
+<ul>
+<li>S3と同様にメソッドが定義できる</li>
+<li>S4は継承の仕組みもある</li>
+</ul>
+</section>
+<section id="まとめ-list-s3-s4" class="slide level2">
+<h1>まとめ: List, S3, S4</h1>
+<ul>
+<li>Listは連想配列, <code>$</code>でアクセス</li>
+<li>S3は<code>class</code>属性を使った簡易ジェネリック</li>
+<li><p>S4はS3から少し厳密になったクラス</p></li>
+<li>S3とS4どっちが良いかは終わらない議論
+<ul>
+<li>ちなみにGoogleはS3派</li>
+<li>(GoogleにはRコーディング規約が存在する)</li>
+</ul></li>
+</ul>
+</section>
+<section id="大まとめ" class="slide level2">
+<h1>大まとめ</h1>
+<ul>
+<li>だいたいベクトル</li>
+<li>ベクトルで計算しよ
+<ul>
+<li>ベクトル計算で出来ないのであれば, Rで書くべきでない</li>
+<li>ベクトル演算の命令を把握しておく必要がある</li>
+</ul></li>
+<li>S3かS4が他の言語でいうデータ構造の役割</li>
+</ul>
+</section>
+    </div>
+  </div>
+
+  <script src="./reveal.js-3.3.0/lib/js/head.min.js"></script>
+  <script src="./reveal.js-3.3.0/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Vertical centering of slides
+        center: false,
+        // Transition style
+        transition: 'default', // none/fade/slide/convex/concave/zoom
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'default', // none/fade/slide/convex/concave/zoom
+
+
+        // Optional reveal.js plugins
+        dependencies: [
+        ]
+      });
+    </script>
+  <!-- dynamically load mathjax for compatibility with self-contained -->
+  <script>
+    (function () {
+      var script = document.createElement("script");
+      script.type = "text/javascript";
+      script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+      document.getElementsByTagName("head")[0].appendChild(script);
+    })();
+  </script>
+
+<script>
+  (function() {
+    if (window.jQuery) {
+      Reveal.addEventListener( 'slidechanged', function(event) {  
+        window.jQuery(event.previousSlide).trigger('hidden');
+        window.jQuery(event.currentSlide).trigger('shown');
+      });
+    }
+  })();
+</script>
+
+
+  </body>
+</html>
